@@ -1,4 +1,6 @@
+__pycache__
 *.pyc
 *.sw?
 .ipynb_checkpoints/
 config.yml
+tmp/*
