@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <a href="/">Back to Main</a>
+    <title>Keyword</title>
+    <style>
+        textarea::placeholder {
+            white-space: pre-line;
+        }
+    </style>
+</head>
+<body>
+    <h1>Keyword</h1>
+    <p>Enter keywords and Make SCENE list:</p>
+    <form action="/keyword" method="post">
+        <textarea name="keywords" rows="4" cols="70" placeholder="Enter keywords about character, logline, genre.
+        EX: 형사, 조직보스, 형사와 조직보스의 팀웍, 살인마집단, 코믹, 액션"></textarea><br>
+        <input type="submit" value="RUN">
+    </form>
+    {% if result %}
+    <h2>Result</h2>
+    <pre>{{ result }}</pre>
+    {% endif %}
+</body>
+</html>
