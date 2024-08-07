@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <a href="/">Back to Main</a>
+    <title>Scenario</title>
+    <style>
+        textarea::placeholder {
+            white-space: pre-line;
+        }
+        .pre_text {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            white-space: normal; /* 기본 줄바꿈 동작으로 설정 */
+            word-wrap: break-word; /* 긴 단어도 줄바꿈 되도록 설정 */
+            line-height:2;
+        }
+        
+    </style>
+</head>
+<body>
+    <h1>AI Synopsis</h1>
+    {% if synopsis_result %}
+    <div>
+        <p>
+        <pre class="pre_text">{{ synopsis_result }}</pre>
+    </div>
+    {% endif %}
+    <h1>AI Scenario</h1>
+    {% if scenario_result %}
+    <div>
+        <p>
+        <pre class="pre_text">{{ scenario_result }}</pre>
+    </div>
+    {% endif %}
+</body>
+</html>
+
+
+
+
+

@@ -4,3 +4,5 @@ __pycache__
 .ipynb_checkpoints/
 config.yml
 tmp/*
+*.txt
+flask_session/

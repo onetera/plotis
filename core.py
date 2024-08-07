@@ -38,12 +38,13 @@ class PreprodAI:
         )
 
         self.client = ChatOpenAI(
-                    model = 'gpt-4o-mini',
+                    model = 'gpt-4o',
+                    #model = 'gpt-4o-mini',
                     api_key = api_key,
                     **params,
         )
         self.sys_temp = SystemMessagePromptTemplate.from_template(
-                    ' 이 시스템은 영화 시나리오 작가이다.'
+                    ' 이 시스템은 한국 영화 시나리오 작가이다.'
         )
 
         self.synop = ''
@@ -77,7 +78,7 @@ class PreprodAI:
         search_msg = '{synop}'
         search_msg += '이 시스템은 한국 영화 시나리오 작가이다'
         search_msg += '이 시놉시스를 이용 해서 기승전결있는  {min}~{max}개의 장면을 만들어줘'
-        search_msg += '장면번호는 숫자만 , 장소, 간단한 설명의 순서로 텍스트 형태 데이이터로 만들어줘'
+        search_msg += '장면번호는 숫자만 , 장소, 간단한 설명의 순서로 컴마로 구분된  텍스트 형태 데이이터로 만들어줘'
         search_msg += '데이터 형식 이름 같이  다른건 아무것도 출력하지 말고 오직 생성된 중첩 데이터만 출력해줘.'
         search_msg += '장면이 {min}개 이하면 좀더 계산해서 기승전결이 있는 {min}개~{max}개의 장면이 되도록 작성해줘.'
 
@@ -89,15 +90,16 @@ class PreprodAI:
         for row in response.split('\n'):
             loc_list.append( row.split(',') )
         self.loc = loc_list
+        with open( './tmp/location.txt' , 'w' ) as f:
+            f.write( str( loc_list ) )
         return response
 
     def write_scene( self ):
         ## location 기반으로 작성
-        with open('./tmp/scenario.txt' , 'w' ) as f:
-
+        with open('./scenario.txt' , 'w' ) as f:
             i = 0
             for loc in self.loc:
-                print( loc )
+                print( 'loc : ', loc )
                 search_msg =  '이 시스템은 한국 영화 시나리오 작가이다.'
                 search_msg += '이 장면의 번호는 {num}이다.'
                 search_msg += '이 장면의 장소는 {location}이다.'

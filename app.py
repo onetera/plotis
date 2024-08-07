@@ -1,8 +1,11 @@
 # :coding: utf-8
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
+from flask_session import Session
 
 import os
+import pickle
+
 import pprint
 
 import core
@@ -16,31 +19,58 @@ logging.basicConfig(level=logging.DEBUG)
 app = Flask( __name__ )
 
 app.config['UPLOAD_FOLDER'] = './tmp'
-
+app.config['SESSION_TYPE'] = 'filesystem'  # 세션을 파일 시스템에 저장
+Session(app)
 
 @app.route( '/' )
 def main_page():
     return render_template( 'main.html' )
 
-@app.route( '/keyword', methods=[ 'GET', 'POST' ])
-def keyword_page():
+@app.route( '/synopsis', methods=[ 'GET', 'POST' ])
+def synopsis():
     if request.method == 'POST':
-        keywords = request.form.get('keywords', '')
+        keywords = request.form.get( 'synopsis', '' )
 
         if not keywords:
-            logging.error('No Keywords')
-            return redirect(request.url)
+            logging.error( 'No Keywords' )
+            return redirect( request.url )
         
-        keyword_ai = core.PreprodAI()
-        logging.info('Start to make SCENE List from Keywords')
-        keyword_ai.create_synop(keywords)
-        keyword_ai.create_location()
-        keyword_ai.write_scene()
-        logging.info('Start to make SCENE List from Keywords')
+        preprod_ai = core.PreprodAI()
+        logging.info( 'Start to make synopsis list from keywords' )
+        preprod_ai.create_synop(keywords)
+        #keyword_ai.create_location()
+        #keyword_ai.write_scene()
+        #logging.info('Start to make synopsis list from keywords')
+        
+        with open( './synop.txt' , 'w' ) as f:
+            f.write( preprod_ai.synop )
 
-        return render_template( 'keyword.html', result=f'Save Scenario at ./tmp/scenario.txt' )
+        return render_template( 'synopsis.html', synopsis_result= preprod_ai.synop  )
 
-    return render_template( 'keyword.html' )
+    return render_template( 'synopsis.html' )
+
+@app.route( '/scenario', methods = ['GET', 'POST'] )
+def scenario():
+    preprod_ai = core.PreprodAI()
+
+    with open( './synop.txt'  ) as f:
+        preprod_ai.synop = f.read( )
+
+    if os.path.exists( './location.txt' ):
+        with open( './location.txt' ) as f:
+            loc_data = f.read()
+        preprod_ai.loc = list( loc_data )                    
+        logging.info( 'location file exists' )
+    else:
+        logging.info( 'location file does not exists' )
+        preprod_ai.create_location()
+
+    preprod_ai.write_scene()
+
+
+    return render_template( 'scenario.html', scnario_result = preprod_ai.scenario )
+        
+
 
 @app.route( '/pdf', methods=[ 'GET', 'POST' ])
 def pdf_page():
