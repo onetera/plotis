@@ -27,22 +27,13 @@ class PreprodAI:
     def __init__(self ):
         with open( './config.yml' ) as f:
             data = yaml.load( f, Loader = yaml.FullLoader )
-            api_key = data['api_key']
-        params = {
-                    'temperature' : 0.5,
-        }
+            self.api_key = data['api_key']
         
         self.oai_client = openai.OpenAI( 
-                                    api_key = api_key ,
+                                    api_key = self.api_key ,
                                     #**params,
         )
 
-        self.client = ChatOpenAI(
-                    model = 'gpt-4o',
-                    #model = 'gpt-4o-mini',
-                    api_key = api_key,
-                    **params,
-        )
         self.sys_temp = SystemMessagePromptTemplate.from_template(
                     ' 이 시스템은 한국 영화 시나리오 작가이다.'
         )
@@ -50,6 +41,17 @@ class PreprodAI:
         self.synop = ''
         self.loc = None
         self.scene_list = []
+        self.scenario = ''
+
+        self.scene_numbers = []
+    
+    def client(self, temperature):
+        return ChatOpenAI(
+                    # model = 'gpt-4o',
+                    model = 'gpt-4o-mini',
+                    api_key = self.api_key,
+                    temperature=temperature
+        )
         
     def combine_scene( self ):
         loc = self.create_location( self.synop )
@@ -90,13 +92,13 @@ class PreprodAI:
         for row in response.split('\n'):
             loc_list.append( row.split(',') )
         self.loc = loc_list
-        with open( './location.txt' , 'w' ) as f:
+        with open( './tmp/location.txt' , 'w' ) as f:
             f.write( str( loc_list ) )
         return response
 
     def write_scene( self ):
         ## location 기반으로 작성
-        with open('./scenario.txt' , 'w' ) as f:
+        with open('./tmp/scenario.txt' , 'w' ) as f:
             i = 0
             for loc in self.loc:
                 print( 'loc : ', loc )
@@ -117,6 +119,8 @@ class PreprodAI:
                 )
                 f.write( response )              
                 self.scene_list.append( [ loc[1], response] )
+                self.scenario += response
+                self.scenario += '\n'
 
     def write_conti( self ):
         wb = Workbook()
@@ -157,27 +161,10 @@ class PreprodAI:
                 human_temp,
             ]
         )
-        chain = chat_prompt|self.client| output_parsers.StrOutputParser()
+        chain = chat_prompt|self.client(0.5)| output_parsers.StrOutputParser()
         return chain
 
         
-class PreprodAI_PDF:
-    def __init__(self):
-        with open( './config.yml' ) as f:
-            data = yaml.load( f, Loader = yaml.FullLoader )
-            api_key = data['api_key']
-
-        params = {
-                    'temperature' : 0,
-        }
-        
-        self.client = ChatOpenAI(
-                    model = 'gpt-4o-mini',
-                    api_key = api_key,
-                    **params,
-        )
-        
-        self.scene_numbers = list()
 
     def remove_page_numbers( self, text ):
         text = re.sub(r'\s*-\s*\d+\s*-\s*', '', text, flags=re.MULTILINE)
@@ -275,7 +262,7 @@ class PreprodAI_PDF:
         rag_chain = (
             {'context': RunnablePassthrough()}
             | prompt
-            | self.client
+            | self.client(0)
             | StrOutputParser()
         )
 
