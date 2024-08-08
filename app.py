@@ -5,6 +5,7 @@ from flask_session import Session
 
 import os
 import pickle
+import ast
 
 import pprint
 
@@ -42,7 +43,9 @@ def synopsis():
         #keyword_ai.write_scene()
         #logging.info('Start to make synopsis list from keywords')
         
-        with open( './synop.txt' , 'w' ) as f:
+        synop_path = os.path.join(app.config['UPLOAD_FOLDER'], 'synop.txt')
+
+        with open( synop_path , 'w' ) as f:
             f.write( preprod_ai.synop )
 
         return render_template( 'synopsis.html', synopsis_result= preprod_ai.synop  )
@@ -53,13 +56,18 @@ def synopsis():
 def scenario():
     preprod_ai = core.PreprodAI()
 
-    with open( './synop.txt'  ) as f:
+    synop_path = os.path.join(app.config['UPLOAD_FOLDER'], 'synop.txt')
+    
+    with open( synop_path  ) as f:
         preprod_ai.synop = f.read( )
 
-    if os.path.exists( './location.txt' ):
-        with open( './location.txt' ) as f:
-            loc_data = f.read()
-        preprod_ai.loc = list( loc_data )                    
+    loc_path = os.path.join(app.config['UPLOAD_FOLDER'], 'location.txt')
+
+    if os.path.exists( loc_path ):
+        with open( loc_path ) as f:
+            loc_data = f.read().strip()
+        preprod_ai.loc = ast.literal_eval(loc_data)                    
+        # preprod_ai.loc = list( loc_data )                    
         logging.info( 'location file exists' )
     else:
         logging.info( 'location file does not exists' )
@@ -68,7 +76,7 @@ def scenario():
     preprod_ai.write_scene()
 
 
-    return render_template( 'scenario.html', scnario_result = preprod_ai.scenario )
+    return render_template( 'scenario.html', synopsis_result=preprod_ai.synop, scenario_result=preprod_ai.scenario )
         
 
 
@@ -90,7 +98,7 @@ def pdf_page():
             uploaded_file.save(filepath)
             logging.info(f'Save Uploaded file to {filepath}')
 
-            pdf_ai = core.PreprodAI_PDF()
+            pdf_ai = core.PreprodAI()
             logging.info('Start to make SCENE List from PDF')
             results = pdf_ai.find_location_from_pdf(filepath)
             final_results = pprint.pformat(results, indent=4)
