@@ -90,7 +90,7 @@ class PreprodAI:
         for row in response.split('\n'):
             loc_list.append( row.split(',') )
         self.loc = loc_list
-        with open( './tmp/location.txt' , 'w' ) as f:
+        with open( './location.txt' , 'w' ) as f:
             f.write( str( loc_list ) )
         return response
 
