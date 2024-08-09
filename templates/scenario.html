@@ -8,7 +8,7 @@
         textarea::placeholder {
             white-space: pre-line;
         }
-        .pre_text {
+        .synop {
             margin-top: 20px;
             padding: 10px;
             border: 1px solid #ccc;
@@ -16,6 +16,22 @@
             white-space: normal; /* 기본 줄바꿈 동작으로 설정 */
             word-wrap: break-word; /* 긴 단어도 줄바꿈 되도록 설정 */
             line-height:2;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+
+        }
+        .pre_text {
+            height: 500px;
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            white-space: normal; /* 기본 줄바꿈 동작으로 설정 */
+            word-wrap: break-word; /* 긴 단어도 줄바꿈 되도록 설정 */
+            line-height:2;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+
         }
         
     </style>
@@ -25,14 +41,16 @@
     {% if synopsis_result %}
     <div>
         <p>
-        <pre class="pre_text">{{ synopsis_result }}</pre>
+        <pre class="synop">{{ synopsis_result }}</pre>
     </div>
     {% endif %}
     <h1>AI Scenario</h1>
     {% if scenario_result %}
     <div>
         <p>
-        <pre class="pre_text">{{ scenario_result }}</pre>
+        <pre class="pre_text">{{ scenario_result | safe }}</pre>
+        <input name="conti" type="submit" value="Drawing Conti">
+
     </div>
     {% endif %}
 </body>

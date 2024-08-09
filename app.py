@@ -2,6 +2,7 @@
 
 from flask import Flask, render_template, request, redirect, session
 from flask_session import Session
+import markdown
 
 import os
 import pickle
@@ -30,23 +31,29 @@ def main_page():
 @app.route( '/synopsis', methods=[ 'GET', 'POST' ])
 def synopsis():
     if request.method == 'POST':
-        keywords = request.form.get( 'synopsis', '' )
 
-        if not keywords:
-            logging.error( 'No Keywords' )
-            return redirect( request.url )
-        
-        preprod_ai = core.PreprodAI()
-        logging.info( 'Start to make synopsis list from keywords' )
-        preprod_ai.create_synop(keywords)
-        #keyword_ai.create_location()
-        #keyword_ai.write_scene()
-        #logging.info('Start to make synopsis list from keywords')
+        keywords   = request.form.get( 'synopsis', '' )
+        load_synop = request.form.get( 'load_synop', '' )
         
         synop_path = os.path.join(app.config['UPLOAD_FOLDER'], 'synop.txt')
+        preprod_ai = core.PreprodAI()
 
-        with open( synop_path , 'w' ) as f:
-            f.write( preprod_ai.synop )
+        if load_synop:
+            with open(  synop_path ) as f:
+                data = f.read()
+                preprod_ai.synop = data
+        else:
+
+            if not keywords:
+                logging.error( 'No Keywords' )
+                return redirect( request.url )
+            
+            logging.info( 'Start to make synopsis list from keywords' )
+            preprod_ai.create_synop(keywords)
+            
+
+            with open( synop_path , 'w' ) as f:
+                f.write( preprod_ai.synop )
 
         return render_template( 'synopsis.html', synopsis_result= preprod_ai.synop  )
 
@@ -56,27 +63,47 @@ def synopsis():
 def scenario():
     preprod_ai = core.PreprodAI()
 
-    synop_path = os.path.join(app.config['UPLOAD_FOLDER'], 'synop.txt')
+    scenario      = request.form.get( 'scenario'        , '' )
+    load_scenario = request.form.get( 'load_scenario'   , '' )
     
-    with open( synop_path  ) as f:
-        preprod_ai.synop = f.read( )
+    synop_path      = os.path.join(app.config['UPLOAD_FOLDER'], 'synop.txt'     )
+    loc_path        = os.path.join(app.config['UPLOAD_FOLDER'], 'location.txt'  )
+    scenario_path   = os.path.join(app.config['UPLOAD_FOLDER'], 'scenario.txt'  )
 
-    loc_path = os.path.join(app.config['UPLOAD_FOLDER'], 'location.txt')
 
-    if os.path.exists( loc_path ):
-        with open( loc_path ) as f:
-            loc_data = f.read().strip()
-        preprod_ai.loc = ast.literal_eval(loc_data)                    
-        # preprod_ai.loc = list( loc_data )                    
-        logging.info( 'location file exists' )
+    if load_scenario:
+        if os.path.exists( synop_path ):
+            with open( synop_path  ) as f:
+                preprod_ai.synop = f.read( )
+
+        if os.path.exists( loc_path ):
+            with open( loc_path ) as f:
+                loc_data = f.read().strip()
+            preprod_ai.loc = ast.literal_eval(loc_data)                    
+            logging.info( 'location file exists' )
+        else:
+            logging.info( 'location file does not exists' )
+            preprod_ai.create_location()
+
+        if os.path.exists( scenario_path ):
+            with open( scenario_path ) as f:
+                scenario_data = f.read().strip()
+            preprod_ai.scenario = scenario_data 
+            logging.info( 'scenario file exists' )
     else:
-        logging.info( 'location file does not exists' )
-        preprod_ai.create_location()
+        logging.info( 'scenario file does not exists' )
+        preprod_ai.write_scene()
 
-    preprod_ai.write_scene()
+    scenario = markdown.markdown( preprod_ai.scenario )
 
 
-    return render_template( 'scenario.html', synopsis_result=preprod_ai.synop, scenario_result=preprod_ai.scenario )
+
+    return render_template( 
+                                'scenario.html', 
+                                synopsis_result=preprod_ai.synop, 
+                                #scenario_result=preprod_ai.scenario 
+                                scenario_result = scenario
+                            )
         
 
 
