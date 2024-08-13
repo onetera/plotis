@@ -105,7 +105,41 @@ def scenario():
                                 scenario_result = scenario
                             )
         
+@app.route( '/conti', methods = ['GET', 'POST'] )
+def conti():
+    return render_template( 
+                'conti.html'
+            )
+    
+@app.route( '/character', methods = ['GET', 'POST'] )
+def character():
+    return render_template( 
+                'character.html'
+            )
 
+@app.route( '/concept', methods = ['GET', 'POST'] )
+def concept():
+    return render_template( 
+                'concept.html'
+            )
+
+@app.route( '/ppt', methods = ['GET', 'POST'] )
+def ppt():
+    return render_template( 
+                'ppt.html'
+            )
+
+@app.route( '/budget', methods = ['GET', 'POST'] )
+def budget():
+    return render_template( 
+                'budget.html'
+            )
+
+@app.route( '/schedule', methods = ['GET', 'POST'] )
+def schedule():
+    return render_template( 
+                'schedule.html'
+            )
 
 @app.route( '/pdf', methods=[ 'GET', 'POST' ])
 def pdf_page():
