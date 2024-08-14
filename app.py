@@ -3,6 +3,10 @@
 from flask import Flask, render_template, request, redirect, session
 from flask_session import Session
 import markdown
+from openpyxl import load_workbook
+import base64
+from io import BytesIO
+from PIL import Image as PILImage
 
 import os
 import pickle
@@ -34,7 +38,7 @@ def main_page():
 def synopsis():
     if request.method == 'POST':
 
-        keywords   = request.form.get( 'synopsis', '' )
+        keywords   = request.form.get( 'keywords', '' )
         load_synop = request.form.get( 'load_synop', '' )
         
         synop_path = os.path.join(app.config['UPLOAD_FOLDER'], 'synop.txt')
@@ -42,7 +46,7 @@ def synopsis():
 
         if load_synop:
             last_synop = db.last_synop()
-            preprod_ai.synop = last_synop[1]
+            preprod_ai.synop = last_synop[0][1]
         else:
 
             if not keywords:
@@ -53,8 +57,7 @@ def synopsis():
             preprod_ai.create_synop(keywords)
             
 
-            with open( synop_path , 'w' ) as f:
-                f.write( preprod_ai.synop )
+        session['synop'] = preprod_ai.synop
 
         return render_template( 'synopsis.html', synopsis_result= preprod_ai.synop  )
 
@@ -64,39 +67,28 @@ def synopsis():
 def scenario():
     preprod_ai = core.PreprodAI()
 
+    preprod_ai.synop = session.get('synop', '')
+
     scenario      = request.form.get( 'scenario'        , '' )
     load_scenario = request.form.get( 'load_scenario'   , '' )
     
-    synop_path      = os.path.join(app.config['UPLOAD_FOLDER'], 'synop.txt'     )
-    loc_path        = os.path.join(app.config['UPLOAD_FOLDER'], 'location.txt'  )
-    scenario_path   = os.path.join(app.config['UPLOAD_FOLDER'], 'scenario.txt'  )
-
-
     if load_scenario:
-        if os.path.exists( synop_path ):
-            with open( synop_path  ) as f:
-                preprod_ai.synop = f.read( )
+        synop_idx = db.search_synop_idx(preprod_ai.synop)
+        last_scenario = db.load_scenario(synop_idx)
+        preprod_ai.scenario = last_scenario[0][0]
+    elif scenario:
 
-        if os.path.exists( loc_path ):
-            with open( loc_path ) as f:
-                loc_data = f.read().strip()
-            preprod_ai.loc = ast.literal_eval(loc_data)                    
-            logging.info( 'location file exists' )
-        else:
-            logging.info( 'location file does not exists' )
-            preprod_ai.create_location()
-
-        if os.path.exists( scenario_path ):
-            with open( scenario_path ) as f:
-                scenario_data = f.read().strip()
-            preprod_ai.scenario = scenario_data 
-            logging.info( 'scenario file exists' )
-    else:
-        logging.info( 'scenario file does not exists' )
+        if not preprod_ai.synop:
+            logging.error( 'No Synop' )
+            return redirect( request.url )
+        
+        logging.info( 'Start to make scenario form synopsis' )
+        preprod_ai.create_location()
         preprod_ai.write_scene()
+    
+    session['scenario'] = preprod_ai.scenario
 
     scenario = markdown.markdown( preprod_ai.scenario )
-
 
 
     return render_template( 
@@ -108,9 +100,44 @@ def scenario():
         
 @app.route( '/conti', methods = ['GET', 'POST'] )
 def conti():
-    return render_template( 
-                'conti.html'
-            )
+    preprod_ai = core.PreprodAI()
+
+    preprod_ai.scenario = session.get('scenario', '')
+    
+    conti = request.form.get( 'conti', '')
+
+    conti_path = os.path.join(app.config['UPLOAD_FOLDER'], 'conti.xlsx'  )
+    
+    if conti:
+        preprod_ai.write_conti( preprod_ai.scenario )
+    
+    else:
+        return redirect( request.url )
+        
+
+    wb = load_workbook( conti_path )
+    ws = wb.active
+
+    conti_result = []
+
+    for row_idx, row in enumerate(ws.iter_rows(min_row=1, max_row=ws.max_row, max_col=2, values_only=False)):
+        column = row[0].value
+        column = markdown.markdown(column)
+        
+        image_data = None
+        image = ws._images[row_idx]
+        if image:
+            img_byte_arr = BytesIO(image._data())
+            img = PILImage.open(img_byte_arr)
+            buffered = BytesIO()
+            img.save(buffered, format="PNG")
+            encoded_img = base64.b64encode(buffered.getvalue()).decode('utf-8')
+            image_data = f"data:image/png;base64,{encoded_img}"
+        
+        conti_result.append([column, image_data])
+
+    return render_template( 'conti.html', conti_result=conti_result )
+    
     
 @app.route( '/character', methods = ['GET', 'POST'] )
 def character():

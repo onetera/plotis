@@ -37,7 +37,8 @@
     </style>
 </head>
 <body>
-    <input name="upload_synop" type="submit" value="Upload Synopsis">
+    <input name="load_scenario" type="submit" value="Load Scenario">
+    <input name="scenario" type="submit" value="Writing Scenario">
     
     <h1>AI Synopsis</h1>
     {% if synopsis_result %}
@@ -51,8 +52,9 @@
     <div>
         <p>
         <pre class="pre_text">{{ scenario_result | safe }}</pre>
-        <input name="conti" type="submit" value="Drawing Conti">
-
+        <form action="/conti" method="post">
+            <input name="conti" type="submit" value="Drawing Conti">
+        </form>
     </div>
     {% endif %}
 </body>

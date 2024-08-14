@@ -4,11 +4,46 @@
     <meta charset="UTF-8">
     <a href="/">Back to Main</a>
     <title>Conti</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
     <p><p>
-    <input name="load_scenario" type="submit" value="Load Scenario">
-    <input name="upload_scenario" type="submit" value="Upload Scenario">
-    <input name="scenario" type="submit" value="Scenario">
+    <input name="conti" type="submit" value="Drawing Conti">
+    {% if conti_result %}
+    <table>
+        <thead>
+            <tr>
+                <th>Scenario</th>
+                <th>Conti</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in conti_result %}
+            <tr>
+                <td>{{ row[0] | safe }}</td>
+                <td>
+                    {% if row[1] %}
+                    <img src="{{ row[1] }}" alt="Image" height="700">
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
 </body>
 </html>
