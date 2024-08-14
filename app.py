@@ -16,13 +16,15 @@ importlib.reload(core)
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
-
+import db_conn
 
 app = Flask( __name__ )
 
 app.config['UPLOAD_FOLDER'] = './tmp'
 app.config['SESSION_TYPE'] = 'filesystem'  # 세션을 파일 시스템에 저장
 Session(app)
+db = db_conn.DBconn()
+
 
 @app.route( '/' )
 def main_page():
@@ -39,9 +41,8 @@ def synopsis():
         preprod_ai = core.PreprodAI()
 
         if load_synop:
-            with open(  synop_path ) as f:
-                data = f.read()
-                preprod_ai.synop = data
+            last_synop = db.last_synop()
+            preprod_ai.synop = last_synop[1]
         else:
 
             if not keywords:

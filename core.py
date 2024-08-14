@@ -20,6 +20,7 @@ from openpyxl.drawing.image import Image
 import requests
 from io import BytesIO
 
+import db_conn
 
 
 
@@ -37,6 +38,7 @@ class PreprodAI:
         self.sys_temp = SystemMessagePromptTemplate.from_template(
                     ' 이 시스템은 한국 영화 시나리오 작가이다.'
         )
+        self.db = db_conn.DBconn()
 
         self.synop = ''
         self.loc = None
@@ -66,6 +68,7 @@ class PreprodAI:
         chain = self.chain( search_msg )
         response = chain.invoke({'key_join':key_join}  )
         self.synop = response
+        self.db.insert_synop( response, key_join )
         return response
 
     def create_location( self, min = 80, max = 120, synop = '' ):
