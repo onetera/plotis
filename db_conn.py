@@ -36,6 +36,24 @@ class DBconn:
         result = self.cursor.fetchall()
         return result
 
+    def search_synop_idx( self, body ):
+        sql = "SELECT idx FROM synopsis WHERE body LIKE ?;"
+        self.cursor.execute( sql, ('%' + body + '%',) )
+        result = self.cursor.fetchall()        
+        # pprint( result )
+        return result[0][0] 
+    
+    def insert_scenario( self, content, synop_idx  ):
+        sql = 'INSERT INTO scenario (content, synop_idx) VALUES (?, ?);'
+        self.cursor.execute( sql, ( content, synop_idx ) )
+        self.con.commit()
+        
+
+    def load_scenario( self, synop_idx ):
+        sql = "SELECT content FROM scenario WHERE synop_idx = ?;"
+        self.cursor.execute( sql, ( synop_idx, ) )
+        result = self.cursor.fetchall()
+        return result
 
 
 

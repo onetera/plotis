@@ -16,6 +16,7 @@ from langchain.schema import Document
 
 from openpyxl import Workbook
 from openpyxl.drawing.image import Image
+from openpyxl.styles import Alignment
 
 import requests
 from io import BytesIO
@@ -49,8 +50,8 @@ class PreprodAI:
     
     def client(self, temperature):
         return ChatOpenAI(
-                    # model = 'gpt-4o',
-                    model = 'gpt-4o-mini',
+                    model = 'gpt-4o',
+                    # model = 'gpt-4o-mini',
                     api_key = self.api_key,
                     temperature=temperature
         )
@@ -95,53 +96,67 @@ class PreprodAI:
         for row in response.split('\n'):
             loc_list.append( row.split(',') )
         self.loc = loc_list
-        with open( './tmp/location.txt' , 'w' ) as f:
-            f.write( str( loc_list ) )
         return response
 
     def write_scene( self ):
         ## location 기반으로 작성
-        with open('./tmp/scenario.txt' , 'w' ) as f:
-            i = 0
-            for loc in self.loc:
-                print( 'loc : ', loc )
-                search_msg =  '이 시스템은 한국 영화 시나리오 작가이다.'
-                search_msg += '이 장면의 번호는 {num}이다.'
-                search_msg += '이 장면의 장소는 {location}이다.'
-                search_msg += '이 장면의 내용은 {desc}이다.'
-                search_msg += '이 정보를 이용해서 상세한 시나리오를 작성해줘.'
+        synop_idx = self.db.search_synop_idx(self.synop)
 
-                chain = self.chain( search_msg )
-                response = chain.invoke( 
-                            {   
-                                'num'     : loc[0],
-                                'location': loc[1],
-                                'desc'    : loc[2],
-                            }
+        for loc in self.loc:
+            print( 'loc : ', loc )
+            search_msg =  '이 시스템은 한국 영화 시나리오 작가이다.'
+            search_msg += '이 장면의 번호는 {num}이다.'
+            search_msg += '이 장면의 장소는 {location}이다.'
+            search_msg += '이 장면의 내용은 {desc}이다.'
+            search_msg += '이 정보를 이용해서 상세한 시나리오를 작성해줘.'
+            search_msg += '장면3의 예시) ### 장면 3: 장면의 장소'
 
-                )
-                f.write( response )              
-                self.scene_list.append( [ loc[1], response] )
-                self.scenario += response
-                self.scenario += '\n'
+            chain = self.chain( search_msg )
+            response = chain.invoke( 
+                        {   
+                            'num'     : loc[0],
+                            'location': loc[1],
+                            'desc'    : loc[2],
+                        }
 
-    def write_conti( self ):
+            )
+            self.scene_list.append( [ loc[1], response] )
+            self.scenario += response
+            self.scenario += '\n'
+        
+        self.db.insert_scenario(self.scenario, synop_idx)
+
+    def write_conti( self, scenario ):
+        scene_pattern = re.compile(r'\#\#\# 장면 \d+:')
+
+        scenes = scene_pattern.split(scenario)
+        scene_titles = scene_pattern.findall(scenario)
+
+        scene_list = [f"{title.strip()} {scene.strip()}" for title, scene in zip(scene_titles, scenes[1:])]
+
         wb = Workbook()
         ws = wb.active
 
-        i = 0
-        for row, data in enumerate( self.scene_list ):
-            ws.cell( row = row+1, column = 1 , value = data[-1] )
-            prompt = '이 시스템은 영화 콘티작가 입니다.다음 시나리오 일부를 실사 이미지화 해주세요.'
-            prompt += '컨텐츠 정책을 준수해서 이미지를 만들어 주세요.'
-            prompt += '컨텐츠 정책이 위반 되었다면 다시 정책을 준수 해서 다시 이미지를 만들어 주세요.'
-            prompt += data[-1]
+        prompt_ori = '이 시스템은 영화 콘티작가 입니다.다음 시나리오 일부를 실사 이미지화 해주세요.'
+        prompt_ori += "다음에 오는 내용에서 중요 장면 1개를 선정한 후 반드시 아래의 스타일에 맞춰 그려주세요"
+        prompt_ori += "만약 컨텐츠 정책이 위반되었다면 반드시 정책을 준수해서 다시 장면 선정을 한 후 이미지를 재생성해주세요."
+        prompt_ori += "스타일 : 흑색의 크로키 스타일 스케치, 본질과 감정을 담아낸 부드럽고 표현적인 선, 간결한 배경, 자연스러운 느낌"
+
+        for row, data in enumerate( scene_list ):
+            prompt = prompt_ori
+            cell = ws.cell( row = row+1, column = 1 , value = data )
+            cell.alignment = Alignment(wrap_text=True, vertical='center', horizontal='center')
+
+            prompt += f"내용 : {data}"
+            prompt += "만약 컨텐츠 정책이 위반되었다면 반드시 정책을 준수할 때까지 다시 장면을 선정해서 이미지를 재생성해주세요."
 
             response = self.oai_client.images.generate(
                 model = 'dall-e-3',
                 prompt = prompt,
                 n = 1,
                 size = '1024x1024',
+                quality = 'standard',
+                style = 'natural'
             )
             image_url = response.data[0].url
             image_path = requests.get(image_url)
@@ -151,6 +166,7 @@ class PreprodAI:
             ws.add_image( img, 'B{}'.format( row + 1 ) )
             ws.row_dimensions[ row+1 ].height = 320
             ws.column_dimensions[ 'A' ].width = 90
+
         wb.save(   './tmp/conti.xlsx' )
            
 
