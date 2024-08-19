@@ -38,7 +38,7 @@ class PreprodAI:
         )
 
         self.sys_temp = SystemMessagePromptTemplate.from_template(
-                    ' 이 시스템은 한국 영화 시나리오 작가이다.'
+                    ' 이 시스템은 한국 영화 시나리오 작가이다. 이 시스템은 콘텐츠 정책을 준수 한다.'
         )
         self.db = db_conn.DBconn()
 
@@ -321,4 +321,28 @@ class PreprodAI:
             final_results.extend(parsed_results)
 
         return final_results
+
+    def drawing_concept( self , synop ):
+        content = '이 시스템은  한국 영화의 컨셉 아티스트 입니다.'
+        content += '이 시스템은 콘텐츠 정책을 준수 합니다.'
+        content += '{}\n'.format( synop )
+        content += '이 시놉시스를 이용해서 컨셉 이미지를 그려줘'
+        response = self.oai_client.images.generate(
+            model = 'dall-e-3',
+            prompt = prompt,
+            n = 1,
+            size = '1024x1024',
+            quality = 'standard',
+            style = 'natural'
+        )
+        image_url = response.data[0].url
+        image_url_get = requests.get(image_url)
+
+        img_uid = str(shortuuid.uuid())
+        img_path = f'./tmp/concept/{img_uid}.png'
+        with open(img_path, 'wb') as f:
+            f.write( image_url_get.content )
+
+
+
 
