@@ -107,6 +107,7 @@ def conti():
         
         load_scenario = request.form.get( 'load_scenario'   , '' )
         conti = request.form.get( 'conti', '')
+        load_conti = request.form.get( 'load_conti', '')
         save_conti = request.form.get( 'save_conti', '')
 
         if load_scenario:
@@ -120,6 +121,10 @@ def conti():
             
         elif conti:
             preprod_ai.write_conti( preprod_ai.scenario, scenario_idx )
+            contis = db.load_conti( scenario_idx )
+        
+        elif load_conti:
+            contis = db.load_conti( scenario_idx )
         
         elif save_conti:
             conti_file = preprod_ai.save_conti( scenario_idx )
@@ -129,7 +134,6 @@ def conti():
             return redirect( request.url )
             
         conti_result = []
-        contis = db.load_conti( scenario_idx )
 
         for conti_data in contis:
             scene = conti_data[1]
