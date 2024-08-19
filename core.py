@@ -160,9 +160,9 @@ class PreprodAI:
             image_url_get = requests.get(image_url)
 
             img_uid = str(shortuuid.uuid())
-            img_path = f'./tmp/{img_uid}.png'
-            with open(img_path, 'wb') as f:
-                f.write(image_url_get.content)
+            img_path = f'./tmp/conti/{ img_uid }.png'
+            with open( img_path, 'wb' ) as f:
+                f.write( image_url_get.content )
             
             if not load_conti:
                 self.db.insert_conti( data, img_path, scenario_idx )
