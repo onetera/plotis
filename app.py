@@ -41,7 +41,6 @@ def synopsis():
         keywords   = request.form.get( 'keywords', '' )
         load_synop = request.form.get( 'load_synop', '' )
         
-        synop_path = os.path.join(app.config['UPLOAD_FOLDER'], 'synop.txt')
         preprod_ai = core.PreprodAI()
 
         if load_synop:
@@ -100,42 +99,54 @@ def scenario():
         
 @app.route( '/conti', methods = ['GET', 'POST'] )
 def conti():
-    preprod_ai = core.PreprodAI()
+    if request.method == 'POST':
+        preprod_ai = core.PreprodAI()
 
-    preprod_ai.scenario = session.get('scenario', '')
-    scenario_idx = db.search_sceanrio_idx( preprod_ai.scenario )
-    
-    conti = request.form.get( 'conti', '')
-    save_conti = request.form.get( 'save_conti', '')
-
-    if conti:
-        preprod_ai.write_conti( preprod_ai.scenario, scenario_idx )
-    
-    elif save_conti:
-        conti_file = preprod_ai.save_conti( scenario_idx )
-        return send_file( conti_file, as_attachment=True)
-
-    else:
-        return redirect( request.url )
+        preprod_ai.scenario = session.get('scenario', '')
+        scenario_idx = db.search_sceanrio_idx( preprod_ai.scenario )
         
-    conti_result = []
-    contis = db.load_conti( scenario_idx )
+        load_scenario = request.form.get( 'load_scenario'   , '' )
+        conti = request.form.get( 'conti', '')
+        save_conti = request.form.get( 'save_conti', '')
 
-    for conti_data in contis:
-        scene = conti_data[1]
-        img_path = conti_data[2]
-        
-        scene = markdown.markdown(scene)
+        if load_scenario:
+            scenario = db.last_scenario()[0][1]
+            scenario_idx = db.search_sceanrio_idx( scenario )
+            
+            session['scenario'] = scenario
+            scenario = markdown.markdown( scenario )
 
-        image_data = None
-        if os.path.exists(img_path):
-            with open(img_path, "rb") as img_file:
-                encoded_img = base64.b64encode(img_file.read()).decode('utf-8')
-                image_data = f"data:image/png;base64,{encoded_img}"
+            return render_template( 'conti.html', scenario_result=scenario )
+            
+        elif conti:
+            preprod_ai.write_conti( preprod_ai.scenario, scenario_idx )
         
-        conti_result.append([scene, image_data])
-    
-    return render_template('conti.html', conti_result=conti_result)
+        elif save_conti:
+            conti_file = preprod_ai.save_conti( scenario_idx )
+            return send_file( conti_file, as_attachment=True)
+
+        else:
+            return redirect( request.url )
+            
+        conti_result = []
+        contis = db.load_conti( scenario_idx )
+
+        for conti_data in contis:
+            scene = conti_data[1]
+            img_path = conti_data[2]
+            
+            scene = markdown.markdown( scene )
+
+            image_data = None
+            if os.path.exists( img_path ):
+                with open(img_path, "rb") as img_file:
+                    encoded_img = base64.b64encode(img_file.read()).decode('utf-8')
+                    image_data = f"data:image/png;base64,{encoded_img}"
+            
+            conti_result.append([ scene, image_data ])
+        
+        return render_template( 'conti.html', conti_result=conti_result )
+    return render_template( 'conti.html' )
     
 @app.route( '/character', methods = ['GET', 'POST'] )
 def character():

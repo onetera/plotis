@@ -5,6 +5,19 @@
     <a href="/">Back to Main</a>
     <title>Conti</title>
     <style>
+        .pre_text {
+            height: 500px;
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            white-space: normal; /* 기본 줄바꿈 동작으로 설정 */
+            word-wrap: break-word; /* 긴 단어도 줄바꿈 되도록 설정 */
+            line-height:2;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -23,10 +36,17 @@
 <body>
     <p><p>
     <form action="/conti" method="post"> 
+        <input name="load_scenario" type="submit" value="Load Scenario">
         <input name="conti" type="submit" value="Drawing Conti">
         <input name="save_conti" type="submit" value="Save Conti">
     </form>
     <p><p>
+    {% if scenario_result %}
+    <div>
+        <p>
+        <pre class="pre_text">{{ scenario_result | safe }}</pre>
+    </div>
+    {% endif %}
     {% if conti_result %}
     <table>
         <thead>

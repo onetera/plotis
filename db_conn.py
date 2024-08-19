@@ -55,6 +55,12 @@ class DBconn:
         result = self.cursor.fetchall()
         return result
     
+    def last_scenario( self ):
+        sql = "SELECT * FROM scenario ORDER BY idx DESC LIMIT 1"
+        self.cursor.execute( sql )
+        result = self.cursor.fetchall()
+        return result
+    
     def insert_conti( self, scene, img_path, scenario_idx):
         sql = 'INSERT INTO conti (scene, img_path, scenario_idx) VALUES (?, ?, ?);'
         self.cursor.execute( sql, ( scene, img_path, scenario_idx ) )
