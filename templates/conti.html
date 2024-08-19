@@ -22,7 +22,11 @@
 </head>
 <body>
     <p><p>
-    <input name="conti" type="submit" value="Drawing Conti">
+    <form action="/conti" method="post"> 
+        <input name="conti" type="submit" value="Drawing Conti">
+        <input name="save_conti" type="submit" value="Save Conti">
+    </form>
+    <p><p>
     {% if conti_result %}
     <table>
         <thead>

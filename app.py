@@ -1,6 +1,6 @@
 # :coding: utf-8
 
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, send_file
 from flask_session import Session
 import markdown
 from openpyxl import load_workbook
@@ -103,41 +103,39 @@ def conti():
     preprod_ai = core.PreprodAI()
 
     preprod_ai.scenario = session.get('scenario', '')
+    scenario_idx = db.search_sceanrio_idx( preprod_ai.scenario )
     
     conti = request.form.get( 'conti', '')
+    save_conti = request.form.get( 'save_conti', '')
 
-    conti_path = os.path.join(app.config['UPLOAD_FOLDER'], 'conti.xlsx'  )
-    
     if conti:
-        preprod_ai.write_conti( preprod_ai.scenario )
+        preprod_ai.write_conti( preprod_ai.scenario, scenario_idx )
     
+    elif save_conti:
+        conti_file = preprod_ai.save_conti( scenario_idx )
+        return send_file( conti_file, as_attachment=True)
+
     else:
         return redirect( request.url )
         
-
-    wb = load_workbook( conti_path )
-    ws = wb.active
-
     conti_result = []
+    contis = db.load_conti( scenario_idx )
 
-    for row_idx, row in enumerate(ws.iter_rows(min_row=1, max_row=ws.max_row, max_col=2, values_only=False)):
-        column = row[0].value
-        column = markdown.markdown(column)
+    for conti_data in contis:
+        scene = conti_data[1]
+        img_path = conti_data[2]
         
+        scene = markdown.markdown(scene)
+
         image_data = None
-        image = ws._images[row_idx]
-        if image:
-            img_byte_arr = BytesIO(image._data())
-            img = PILImage.open(img_byte_arr)
-            buffered = BytesIO()
-            img.save(buffered, format="PNG")
-            encoded_img = base64.b64encode(buffered.getvalue()).decode('utf-8')
-            image_data = f"data:image/png;base64,{encoded_img}"
+        if os.path.exists(img_path):
+            with open(img_path, "rb") as img_file:
+                encoded_img = base64.b64encode(img_file.read()).decode('utf-8')
+                image_data = f"data:image/png;base64,{encoded_img}"
         
-        conti_result.append([column, image_data])
-
-    return render_template( 'conti.html', conti_result=conti_result )
+        conti_result.append([scene, image_data])
     
+    return render_template('conti.html', conti_result=conti_result)
     
 @app.route( '/character', methods = ['GET', 'POST'] )
 def character():
