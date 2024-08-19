@@ -54,8 +54,28 @@ class DBconn:
         self.cursor.execute( sql, ( synop_idx, ) )
         result = self.cursor.fetchall()
         return result
+    
+    def insert_conti( self, scene, img_path, scenario_idx):
+        sql = 'INSERT INTO conti (scene, img_path, scenario_idx) VALUES (?, ?, ?);'
+        self.cursor.execute( sql, ( scene, img_path, scenario_idx ) )
+        self.con.commit()
+    
+    def update_conti( self, scene, img_path, scenario_idx ):
+        sql = 'UPDATE conti SET img_path = ? WHERE scene = ? AND scenario_idx = ?;'
+        self.cursor.execute( sql, ( img_path, scene, scenario_idx ) )
+        self.con.commit()
 
+    def load_conti( self, scenario_idx ):
+        sql = "SELECT * FROM conti WHERE scenario_idx = ?;"
+        self.cursor.execute( sql, ( scenario_idx, ) )
+        result = self.cursor.fetchall()
+        return result
 
+    def search_sceanrio_idx( self, content ):
+        sql = "SELECT idx FROM scenario WHERE content LIKE ?;"
+        self.cursor.execute( sql, ('%' + content + '%',) )
+        result = self.cursor.fetchall()        
+        return result[0][0] 
 
 
 
