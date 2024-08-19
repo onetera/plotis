@@ -5,3 +5,6 @@ __pycache__
 config.yml
 *.txt
 flask_session/
+tmp/*.log
+tmp/*.pid
+tmp/*.sock
