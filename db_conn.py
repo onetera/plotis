@@ -83,5 +83,20 @@ class DBconn:
         result = self.cursor.fetchall()        
         return result[0][0] 
 
+    def insert_character( self, characters, scenario_idx ):
+        sql = 'INSERT INTO character (characters, scenario_idx) VALUES (?, ?);'
+        self.cursor.execute( sql, ( characters, scenario_idx ) )
+        self.con.commit()
+    
+    def update_character( self, characters, scenario_idx ):
+        sql = 'UPDATE character SET characters = ? WHERE scenario_idx = ?;'
+        self.cursor.execute( sql, ( characters, scenario_idx ) )
+        self.con.commit()
+    
+    def load_character( self, scenario_idx ):
+        sql = "SELECT * FROM character WHERE scenario_idx = ?;"
+        self.cursor.execute( sql, ( scenario_idx, ) )
+        result = self.cursor.fetchall()
+        return result
 
 
