@@ -111,13 +111,13 @@ def conti():
         save_conti = request.form.get( 'save_conti', '')
 
         if load_scenario:
-            scenario = db.last_scenario()[0][1]
-            scenario_idx = db.search_sceanrio_idx( scenario )
+            scenario = db.last_scenario()
+            scenario_result = scenario[0][1]
             
-            session['scenario'] = scenario
-            scenario = markdown.markdown( scenario )
+            session['scenario'] = scenario_result
+            scenario_result = markdown.markdown( scenario_result )
 
-            return render_template( 'conti.html', scenario_result=scenario )
+            return render_template( 'conti.html', scenario_result=scenario_result )
             
         elif conti:
             preprod_ai.write_conti( preprod_ai.scenario, scenario_idx )
@@ -154,9 +154,43 @@ def conti():
     
 @app.route( '/character', methods = ['GET', 'POST'] )
 def character():
-    return render_template( 
-                'character.html'
-            )
+    if request.method == 'POST':
+        preprod_ai = core.PreprodAI()
+
+        preprod_ai.scenario = session.get('scenario', '')
+        scenario_idx = db.search_sceanrio_idx( preprod_ai.scenario )
+        
+        load_scenario = request.form.get( 'load_scenario'   , '' )
+        character = request.form.get( 'character'   , '' )
+        load_character = request.form.get( 'load_character'   , '' )
+
+        if load_scenario:
+            scenario = db.last_scenario()
+            scenario_result = scenario[0][1]
+
+            session['scenario'] = scenario_result
+            scenario_result = markdown.markdown( scenario_result )
+
+            return render_template( 'character.html', scenario_result=scenario_result )
+        
+        elif character:
+            character_result = preprod_ai.dev_character( preprod_ai.scenario, scenario_idx )
+
+        
+        elif load_character:
+            load_character_result = db.load_character( scenario_idx )
+            character_result = load_character_result[0][1]
+
+
+        else:
+            return redirect( request.url )
+        
+        preprod_ai.scenario = markdown.markdown( preprod_ai.scenario )
+        character_result = markdown.markdown( character_result )
+            
+        return render_template( 'character.html', scenario_result=preprod_ai.scenario, character_result=character_result )
+    
+    return render_template( 'character.html' )
 
 @app.route( '/concept', methods = ['GET', 'POST'] )
 def concept():
