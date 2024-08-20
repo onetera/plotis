@@ -99,4 +99,15 @@ class DBconn:
         result = self.cursor.fetchall()
         return result
 
+    def insert_concept( self, img_path, synop_idx ):
+        sql =  'INSERT INTO concept ( img_path, synop_idx) VALUES ( ?, ?);'
+        self.cursor.execute( sql, ( img_path, synop_idx ) )
+        self.con.commit()
+
+    def load_concept( self, synop_idx ):
+        sql = "SELECT * FROM concept WHERE synop_idx = ?;"
+        self.cursor.execute( sql, ( synop_idx, ) )
+        result = self.cursor.fetchall()
+        return result
+        
 

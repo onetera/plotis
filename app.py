@@ -34,6 +34,7 @@ db = db_conn.DBconn()
 def main_page():
     return render_template( 'main.html' )
 
+
 @app.route( '/synopsis', methods=[ 'GET', 'POST' ])
 def synopsis():
     if request.method == 'POST':
@@ -55,12 +56,12 @@ def synopsis():
             logging.info( 'Start to make synopsis list from keywords' )
             preprod_ai.create_synop(keywords)
             
-
         session['synop'] = preprod_ai.synop
 
         return render_template( 'synopsis.html', synopsis_result= preprod_ai.synop  )
 
     return render_template( 'synopsis.html' )
+
 
 @app.route( '/scenario', methods = ['GET', 'POST'] )
 def scenario():
@@ -93,7 +94,6 @@ def scenario():
     return render_template( 
                                 'scenario.html', 
                                 synopsis_result=preprod_ai.synop, 
-                                #scenario_result=preprod_ai.scenario 
                                 scenario_result = scenario
                             )
         
@@ -194,9 +194,48 @@ def character():
 
 @app.route( '/concept', methods = ['GET', 'POST'] )
 def concept():
-    return render_template( 
-                'concept.html'
-            )
+    if request.method == 'POST':
+        preprod_ai = core.PreprodAI()
+        preprod_ai.synop     = session.get('synop'     , '')
+        preprod_ai.synop_idx = session.get('synop_idx' , '')
+
+        load_synop   = request.form.get( 'load_synop'   , '' )
+        concept_img  = request.form.get( 'concept_img'  , '' )
+        load_concept = request.form.get( 'load_concept' , '' )
+
+        image_data = ''
+        
+        if load_synop:
+            last_synop       = db.last_synop()
+            preprod_ai.synop = last_synop[0][1]
+            session['synop'] = preprod_ai.synop
+            session['synop_idx'] = preprod_ai.synop
+
+        elif load_concept:
+            result = db.load_concept(  preprod_ai.synop_idx )
+            if result :
+                img_path = result[0][1]
+                if os.path.exists( img_path ):
+                    with open(img_path, "rb") as img_file:
+                        encoded_img = base64.b64encode(img_file.read()).decode('utf-8')
+                        image_data = f"data:image/png;base64,{encoded_img}"
+
+        elif concept:
+            img_path = preprod_ai.drawing_concept(  preprod_ai.synop )
+            db.insert_concept( img_path, preprod_ai.synop_idx ) 
+
+            if os.path.exists( img_path ):
+                with open(img_path, "rb") as img_file:
+                    encoded_img = base64.b64encode(img_file.read()).decode('utf-8')
+                    image_data = f"data:image/png;base64,{encoded_img}"
+
+        return render_template( 
+                        'concept.html', 
+                        synop_result=preprod_ai.synop ,
+                        concept_img = image_data
+        )
+    return  render_template( 'concept.html' )           
+
 
 @app.route( '/ppt', methods = ['GET', 'POST'] )
 def ppt():
