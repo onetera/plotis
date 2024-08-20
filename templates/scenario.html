@@ -37,9 +37,11 @@
     </style>
 </head>
 <body>
-    <input name="load_scenario" type="submit" value="Load Scenario">
-    <input name="scenario" type="submit" value="Writing Scenario">
-    
+    <p><p>
+    <form action="/scenario" method="post">
+        <input name="load_scenario" type="submit" value="Load Scenario">
+        <input name="scenario" type="submit" value="Writing Scenario">
+    </form> 
     <h1>AI Synopsis</h1>
     {% if synopsis_result %}
     <div>
