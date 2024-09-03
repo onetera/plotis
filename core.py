@@ -1,6 +1,7 @@
 # :coding: utf-8
 
 import re
+import datetime
 import yaml
 import openai
 
@@ -373,3 +374,53 @@ class PreprodAI:
 
         return response
 
+    def make_schedule( self, scenario, scenario_idx ):
+        start_date = datetime.datetime.now()
+
+        search_msg = '이 시스템은 유능한 넷플릭스 콘텐츠 PM입니다.'
+        search_msg += '다음 시나리오를 넷플릭스에서 방영한다고 했을 때 넷플릭스 기준으로 현실적인 상업영화 제작 스케줄을 짜주세요.'
+        search_msg += '스케줄은 {start_date} 이후 미래부터 시작되어야 하며, 영화 제작의 모든 과정이 효율적으로 이루어질 수 있도록 계획해주세요.'
+        search_msg += 'preproduction, production, postproduction, p&a 순으로 작성하세요.'
+        search_msg += 'production, postproduction, p&a에서 동시에 가능한 파트들은 병행하여 짜주세요.'
+        search_msg += '제작 스케줄을 세세하게 짜주세요.'
+        search_msg += '다른 어떠한 추가 문장이나 설명도 출력하지 말고, 반드시 스케줄 형식으로만 답변하세요.'
+        search_msg += '작성 예시를 엄격히 따라 작성하세요.'
+        search_msg += '시나리오 : {scenario}'
+        search_msg += '작성 예시) ## 1. 파트명'
+        search_msg += '#### 내용키워드'
+        search_msg += '- 기간: YYYY년 MM월 DD일 ~ YYYY년 MM월 DD일'
+        search_msg += '- 내용: 상세내용'
+
+        chain = self.chain(search_msg)
+        response = chain.invoke( {'start_date':start_date, 'scenario':scenario} )
+        
+        load_schedule = self.db.load_schedule( scenario_idx )
+
+        if not load_schedule:
+            self.db.insert_schedule( response, scenario_idx )
+        else:
+            self.db.update_schedule( response, scenario_idx )
+
+        return response
+    
+    def set_budget( self, schedule, scenario_idx ):
+        search_msg = '이 시스템은 유능한 콘텐츠 예산 분석가입니다.'
+        search_msg += '다음 스케줄을 보고 예산을 디테일하게 짜주세요.'
+        search_msg += '예산 결과는 표로 보여주세요.'
+        search_msg += '표의 헤더는 "항목, 기간, 세부항목, 예산"으로만 설정해주세요.'
+        search_msg += '표의 맨 마지막에는 총 예산을 넣어주세요.'
+        search_msg += '예산은 넷플릭스 상업영화를 기준으로 한화로 책정해주세요.'
+        search_msg += '다른 어떠한 추가 문장이나 설명도 출력하지 말고, 반드시 표 형식으로만 답변하세요.'
+        search_msg += '스케줄 : {schedule}'
+
+        chain = self.chain(search_msg)
+        response = chain.invoke( {'schedule':schedule} )
+        
+        load_budget = self.db.load_budget( scenario_idx )
+
+        if not load_budget:
+            self.db.insert_budget( response, scenario_idx )
+        else:
+            self.db.update_budget( response, scenario_idx )
+
+        return response

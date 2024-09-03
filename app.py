@@ -103,7 +103,7 @@ def conti():
         preprod_ai = core.PreprodAI()
 
         preprod_ai.scenario = session.get('scenario', '')
-        scenario_idx = db.search_sceanrio_idx( preprod_ai.scenario )
+        scenario_idx = session.get('scenario_idx', '')
         
         load_scenario = request.form.get( 'load_scenario'   , '' )
         conti = request.form.get( 'conti', '')
@@ -113,8 +113,10 @@ def conti():
         if load_scenario:
             scenario = db.last_scenario()
             scenario_result = scenario[0][1]
+            scenario_idx = scenario[0][0]
             
             session['scenario'] = scenario_result
+            session['scenario_idx'] = scenario_idx
             scenario_result = markdown.markdown( scenario_result )
 
             return render_template( 'conti.html', scenario_result=scenario_result )
@@ -158,7 +160,7 @@ def character():
         preprod_ai = core.PreprodAI()
 
         preprod_ai.scenario = session.get('scenario', '')
-        scenario_idx = db.search_sceanrio_idx( preprod_ai.scenario )
+        scenario_idx = session.get('scenario_idx', '')
         
         load_scenario = request.form.get( 'load_scenario'   , '' )
         character = request.form.get( 'character'   , '' )
@@ -167,8 +169,10 @@ def character():
         if load_scenario:
             scenario = db.last_scenario()
             scenario_result = scenario[0][1]
+            scenario_idx = scenario[0][0]
 
             session['scenario'] = scenario_result
+            session['scenario_idx'] = scenario_idx
             scenario_result = markdown.markdown( scenario_result )
 
             return render_template( 'character.html', scenario_result=scenario_result )
@@ -245,12 +249,85 @@ def ppt():
 
 @app.route( '/budget', methods = ['GET', 'POST'] )
 def budget():
-    return render_template( 
-                'budget.html'
-            )
+    if request.method == 'POST':
+        preprod_ai = core.PreprodAI()
+
+        preprod_ai.scenario = session.get('scenario', '')
+        scenario_idx = session.get('scenario_idx', '')
+        
+        load_scenario = request.form.get( 'load_scenario'   , '' )
+        budget = request.form.get( 'budget'   , '' )
+        load_budget = request.form.get( 'load_budget'   , '' )
+
+        if load_scenario:
+            scenario = db.last_scenario()
+            scenario_result = scenario[0][1]
+            scenario_idx = scenario[0][0]
+
+            session['scenario'] = scenario_result
+            session['scenario_idx'] = scenario_idx
+            scenario_result = markdown.markdown( scenario_result )
+
+            return render_template( 'budget.html', scenario_result=scenario_result )
+        
+        elif budget:
+            schedule = db.load_schedule( scenario_idx )
+            budget_result = preprod_ai.set_budget( schedule, scenario_idx )
+
+        elif load_budget:
+            load_budget_result = db.load_budget( scenario_idx )
+            budget_result = load_budget_result[0][1]
+
+        else:
+            return redirect( request.url )
+        
+        preprod_ai.scenario = markdown.markdown( preprod_ai.scenario )
+        budget_result = markdown.markdown( budget_result, extensions=['tables'] )
+            
+        return render_template( 'budget.html', scenario_result=preprod_ai.scenario, budget_result=budget_result )
+
+    return render_template( 'budget.html' )
 
 @app.route( '/schedule', methods = ['GET', 'POST'] )
 def schedule():
+    if request.method == 'POST':
+        preprod_ai = core.PreprodAI()
+
+        preprod_ai.scenario = session.get('scenario', '')
+        scenario_idx = session.get('scenario_idx', '')
+        
+        load_scenario = request.form.get( 'load_scenario'   , '' )
+        schedule = request.form.get( 'schedule'   , '' )
+        load_schedule = request.form.get( 'load_schedule'   , '' )
+
+        if load_scenario:
+            scenario = db.last_scenario()
+            scenario_result = scenario[0][1]
+            scenario_idx = scenario[0][0]
+
+            session['scenario'] = scenario_result
+            session['scenario_idx'] = scenario_idx
+            scenario_result = markdown.markdown( scenario_result )
+
+            return render_template( 'schedule.html', scenario_result=scenario_result )
+        
+        elif schedule:
+            schedule_result = preprod_ai.make_schedule( preprod_ai.scenario, scenario_idx )
+
+        
+        elif load_schedule:
+            load_schedule_result = db.load_schedule( scenario_idx )
+            schedule_result = load_schedule_result[0][1]
+            pass
+
+
+        else:
+            return redirect( request.url )
+        
+        preprod_ai.scenario = markdown.markdown( preprod_ai.scenario )
+        schedule_result = markdown.markdown( schedule_result )
+            
+        return render_template( 'schedule.html', scenario_result=preprod_ai.scenario, schedule_result=schedule_result )
     return render_template( 
                 'schedule.html'
             )

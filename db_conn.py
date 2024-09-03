@@ -77,12 +77,6 @@ class DBconn:
         result = self.cursor.fetchall()
         return result
 
-    def search_sceanrio_idx( self, content ):
-        sql = "SELECT idx FROM scenario WHERE content LIKE ?;"
-        self.cursor.execute( sql, ('%' + content + '%',) )
-        result = self.cursor.fetchall()        
-        return result[0][0] 
-
     def insert_character( self, characters, scenario_idx ):
         sql = 'INSERT INTO character (characters, scenario_idx) VALUES (?, ?);'
         self.cursor.execute( sql, ( characters, scenario_idx ) )
@@ -110,4 +104,34 @@ class DBconn:
         result = self.cursor.fetchall()
         return result
         
+    def insert_schedule( self, plan, scenario_idx ):
+        sql =  'INSERT INTO schedule ( plan, scenario_idx) VALUES ( ?, ?);'
+        self.cursor.execute( sql, ( plan, scenario_idx ) )
+        self.con.commit()
+    
+    def update_schedule( self, plan, scenario_idx ):
+        sql = 'UPDATE schedule SET plan = ? WHERE scenario_idx = ?;'
+        self.cursor.execute( sql, ( plan, scenario_idx ) )
+        self.con.commit() 
 
+    def load_schedule( self, scenario_idx ):
+        sql = "SELECT * FROM schedule WHERE scenario_idx = ?;"
+        self.cursor.execute( sql, ( scenario_idx, ) )
+        result = self.cursor.fetchall()
+        return result
+    
+    def insert_budget( self, money, scenario_idx ):
+        sql =  'INSERT INTO budget ( money, scenario_idx) VALUES ( ?, ?);'
+        self.cursor.execute( sql, ( money, scenario_idx ) )
+        self.con.commit()
+    
+    def update_budget( self, money, scenario_idx ):
+        sql = 'UPDATE budget SET money = ? WHERE scenario_idx = ?;'
+        self.cursor.execute( sql, ( money, scenario_idx ) )
+        self.con.commit() 
+
+    def load_budget( self, scenario_idx ):
+        sql = "SELECT * FROM budget WHERE scenario_idx = ?;"
+        self.cursor.execute( sql, ( scenario_idx, ) )
+        result = self.cursor.fetchall()
+        return result
