@@ -14,9 +14,10 @@ import ast
 
 import pprint
 
-import core
+#import core
+import main 
 import importlib
-importlib.reload(core)
+importlib.reload( main )
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -42,7 +43,7 @@ def synopsis():
         keywords   = request.form.get( 'keywords', '' )
         load_synop = request.form.get( 'load_synop', '' )
         
-        preprod_ai = core.PreprodAI()
+        preprod_ai = main.PreprodAI()
 
         if load_synop:
             last_synop = db.last_synop()
@@ -65,7 +66,7 @@ def synopsis():
 
 @app.route( '/scenario', methods = ['GET', 'POST'] )
 def scenario():
-    preprod_ai = core.PreprodAI()
+    preprod_ai = main.PreprodAI()
 
     preprod_ai.synop = session.get('synop', '')
 
@@ -100,7 +101,7 @@ def scenario():
 @app.route( '/conti', methods = ['GET', 'POST'] )
 def conti():
     if request.method == 'POST':
-        preprod_ai = core.PreprodAI()
+        preprod_ai = main.PreprodAI()
 
         preprod_ai.scenario = session.get('scenario', '')
         scenario_idx = session.get('scenario_idx', '')
@@ -157,7 +158,7 @@ def conti():
 @app.route( '/character', methods = ['GET', 'POST'] )
 def character():
     if request.method == 'POST':
-        preprod_ai = core.PreprodAI()
+        preprod_ai = main.PreprodAI()
 
         preprod_ai.scenario = session.get('scenario', '')
         scenario_idx = session.get('scenario_idx', '')
@@ -199,7 +200,7 @@ def character():
 @app.route( '/concept', methods = ['GET', 'POST'] )
 def concept():
     if request.method == 'POST':
-        preprod_ai = core.PreprodAI()
+        preprod_ai = main.PreprodAI()
         preprod_ai.synop     = session.get('synop'     , '')
         preprod_ai.synop_idx = session.get('synop_idx' , '')
 
@@ -250,7 +251,7 @@ def ppt():
 @app.route( '/budget', methods = ['GET', 'POST'] )
 def budget():
     if request.method == 'POST':
-        preprod_ai = core.PreprodAI()
+        preprod_ai = main.PreprodAI()
 
         preprod_ai.scenario = session.get('scenario', '')
         scenario_idx = session.get('scenario_idx', '')
@@ -291,7 +292,7 @@ def budget():
 @app.route( '/schedule', methods = ['GET', 'POST'] )
 def schedule():
     if request.method == 'POST':
-        preprod_ai = core.PreprodAI()
+        preprod_ai = main.PreprodAI()
 
         preprod_ai.scenario = session.get('scenario', '')
         scenario_idx = session.get('scenario_idx', '')
@@ -350,7 +351,7 @@ def pdf_page():
             uploaded_file.save(filepath)
             logging.info(f'Save Uploaded file to {filepath}')
 
-            pdf_ai = core.PreprodAI()
+            pdf_ai = main.PreprodAI()
             logging.info('Start to make SCENE List from PDF')
             results = pdf_ai.find_location_from_pdf(filepath)
             final_results = pprint.pformat(results, indent=4)
