@@ -123,7 +123,7 @@ def conti():
             return render_template( 'conti.html', scenario_result=scenario_result )
             
         elif conti:
-            preprod_ai.write_conti( preprod_ai.scenario, scenario_idx )
+            preprod_ai.draw_conti( preprod_ai.scenario, scenario_idx )
             contis = db.load_conti( scenario_idx )
         
         elif load_conti:

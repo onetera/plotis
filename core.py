@@ -1,4 +1,13 @@
 
+import yaml
+import openai
+import db_conn
+
+from langchain.chat_models import ChatOpenAI
+from langchain_core.prompts import SystemMessagePromptTemplate, HumanMessagePromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+
 class Core( object ):
     
     def __init__( self ):
@@ -23,4 +32,15 @@ class Core( object ):
                     api_key = self.api_key,
                     temperature=temperature
         )
+    
+    def chain( self, search_msg , parser = StrOutputParser() ):
+        human_temp = HumanMessagePromptTemplate.from_template( search_msg )
+        chat_prompt = ChatPromptTemplate.from_messages(
+            [
+                self.sys_temp,
+                human_temp,
+            ]
+        )
+        chain = chat_prompt|self.client(0.5)| parser
+        return chain
 
