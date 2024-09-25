@@ -3,6 +3,7 @@ from core       import Core
 from synop      import Synop
 from scenario   import Scenario
 from conti      import Conti
+from ppt        import PPT
 
 
 
@@ -32,6 +33,9 @@ class PreprodAI( Core ):
     def make_schedule( scenario, scenario_idx ):
         Schedule.make( scenario, scenario_idx )
     
+    def write_ppt( self ):
+        result = PPT().write()        
+        return result
 
 
 

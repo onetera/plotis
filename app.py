@@ -2,6 +2,7 @@
 
 from flask import Flask, render_template, request, redirect, session, send_file
 from flask_session import Session
+from werkzeug.utils import secure_filename
 import markdown
 from openpyxl import load_workbook
 import base64
@@ -244,9 +245,53 @@ def concept():
 
 @app.route( '/ppt', methods = ['GET', 'POST'] )
 def ppt():
-    return render_template( 
-                'ppt.html'
-            )
+    if request.method == 'POST':
+        preprod_ai = main.PreprodAI()
+
+        preprod_ai.scenario = session.get('scenario'    , '' )
+        scenario_idx        = session.get('scenario_idx', '' )
+        load_scenario       = request.form.get( 'load_scenario'   , '' )
+        upload_scenario     = request.form.get( 'upload_scenario' , '' )
+        download_ppt        = request.form.get( 'download_ppt'    , '' )
+
+        print( )
+        print( upload_scenario )
+        print( load_scenario )
+        print( )
+
+        if load_scenario:
+            scenario        = db.last_scenario()
+            scenario_result = scenario[0][1]
+            scenario_idx    = scenario[0][0]
+
+            session['scenario']     = scenario_result
+            session['scenario_idx'] = scenario_idx
+            scenario_result         = markdown.markdown( scenario_result )
+
+            return render_template( 'ppt.html', scenario_result=scenario_result )
+
+        elif upload_scenario:
+            file = request.files['select_file'] 
+            scenario_path = './tmp/uploaded/' + file.filename 
+            file.save( scenario_path )
+            with open( scenario_path ) as f:
+                scenario_result = f.read()
+                session['scenario'] = scenario_result
+            return render_template( "ppt.html", uploaded = True )
+
+        elif download_ppt:
+            print( '+' * 50 )
+            print( 'download ppt' )
+            if session['scenario']:
+                print( '=' * 50 )
+                print( 'session' )
+                preprod_ai.scenario = session['scenario']
+                result = preprod_ai.write_ppt()
+                print( '^' * 50 )
+                print( result )
+                return render_template( "ppt.html", download_ppt = result )
+
+    return render_template( 'ppt.html' )   
 
 @app.route( '/budget', methods = ['GET', 'POST'] )
 def budget():
