@@ -135,3 +135,16 @@ class DBconn:
         self.cursor.execute( sql, ( scenario_idx, ) )
         result = self.cursor.fetchall()
         return result
+
+    def login( self, login_id, login_pw ):
+        sql = 'SELECT username, passwd FROM users WHERE username = "{}";'.format( login_id )
+        self.cursor.execute( sql )
+        result = self.cursor.fetchall()
+        if not result:
+            return False
+        if result[0]:
+            if result[0][1] == login_pw:
+                return True
+        return False
+
+

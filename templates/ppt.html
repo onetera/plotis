@@ -34,6 +34,8 @@
     </style>
 </head>
 <body>
+    <h1>PPT 제작</h1>
+    {% if login_id %}
     <p><p>
     <form action="/ppt" method="post" enctype="multipart/form-data"> 
         <input name="load_scenario" type="submit" value="Load Scenario"><p>
@@ -41,7 +43,6 @@
         <input name="upload_scenario" type="submit" value="Upload File"><p>
         <input name="download_ppt" type="submit" value="Write & Download PPT"> 
     </form>
-    <h1>PPT 제작</h1>
     {% if uploaded %}
     <div>
     <p>Uploaded the scenario
@@ -61,6 +62,10 @@
         <p>
         <pre class="pre_text">{{ scenario_result | safe }}</pre>
     </div>
+    {% endif %}
+    {% else %}
+        <p><a href="/login">Login</a>
+        <p>
     {% endif %}
 </body>
 </html>

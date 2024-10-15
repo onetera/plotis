@@ -5,6 +5,13 @@
     <title>Main</title>
 </head>
 <body>
+    {% if login_id %}
+        Logged in : {{ login_id }}</li>
+        <br><a href="/logout">Logout</a></li>
+    {% else %}
+        <p><a href="/login">Login</a></li>
+    {% endif %}
+    <p>
     <ul>
         <li><a href="/synopsis">Synopsis</a></li>
         <li><a href="/scenario">Scenario</a></li>

@@ -22,6 +22,7 @@
 
 </head>
 <body>
+    {% if login_id %}
     <form action="/concept" method="post">
     <p><p>
     <input name="load_synop" type="submit" value="Load Synop">
@@ -42,5 +43,10 @@
     <img src="{{ concept_img }}" alt="Image" height="700" ></img>
     {% endif %}
     </form>
+    {% else %}
+        <h1>Concept Art</h1>
+        <p><a href="/login">Login</a>
+        <p>
+    {% endif %}
 </body>
 </html>

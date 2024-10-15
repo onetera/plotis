@@ -1,6 +1,6 @@
 # :coding: utf-8
 
-from flask import Flask, render_template, request, redirect, session, send_file
+from flask import Flask, render_template, request, redirect, session, send_file, url_for
 from flask_session import Session
 from werkzeug.utils import secure_filename
 import markdown
@@ -34,11 +34,36 @@ db = db_conn.DBconn()
 
 @app.route( '/' )
 def main_page():
-    return render_template( 'main.html' )
+    login_id = session.get('login_id', '')
+    print( '\n' )
+    print( 'login_id : ' , login_id )
+    return render_template( 'main.html', login_id = login_id )
+
+@app.route( '/login', methods=[ 'GET', 'POST' ] )
+def login():
+    login_id = request.form.get( 'login_id', '' )
+    login_pw = request.form.get( 'login_pw', '' )
+    if db.login( login_id, login_pw ):
+        session['login_id'] = login_id        
+        return redirect( url_for( 'main_page' ) )
+
+    return render_template( 'login.html' )
+
+@app.route( '/logout' )
+def logout():
+    session.pop( 'login_id' , None )
+    return redirect( url_for( 'main_page') )
+
+@app.route( '/check_login' , methods=[ 'GET', 'POST' ] )
+def check_login( ):
+    login_id = request.form.get( 'login_id', '' )
+    login_pw = request.form.get( 'login_pw', '' )
+    login_info = db.login( login_id , login_pw )
 
 
 @app.route( '/synopsis', methods=[ 'GET', 'POST' ])
 def synopsis():
+    login_id = session.get('login_id', '')
     if request.method == 'POST':
 
         keywords   = request.form.get( 'keywords', '' )
@@ -60,13 +85,14 @@ def synopsis():
             
         session['synop'] = preprod_ai.synop
 
-        return render_template( 'synopsis.html', synopsis_result= preprod_ai.synop  )
+        return render_template( 'synopsis.html', synopsis_result= preprod_ai.synop , login_id= login_id )
 
-    return render_template( 'synopsis.html' )
+    return render_template( 'synopsis.html', login_id = login_id )
 
 
 @app.route( '/scenario', methods = ['GET', 'POST'] )
 def scenario():
+    login_id = session.get('login_id', '')
     preprod_ai = main.PreprodAI()
 
     preprod_ai.synop = session.get('synop', '')
@@ -95,12 +121,14 @@ def scenario():
 
     return render_template( 
                                 'scenario.html', 
-                                synopsis_result=preprod_ai.synop, 
-                                scenario_result = scenario
+                                synopsis_result = preprod_ai.synop, 
+                                scenario_result = scenario,
+                                login_id        = login_id
                             )
         
 @app.route( '/conti', methods = ['GET', 'POST'] )
 def conti():
+    login_id = session.get('login_id', '')
     if request.method == 'POST':
         preprod_ai = main.PreprodAI()
 
@@ -121,7 +149,7 @@ def conti():
             session['scenario_idx'] = scenario_idx
             scenario_result = markdown.markdown( scenario_result )
 
-            return render_template( 'conti.html', scenario_result=scenario_result )
+            return render_template( 'conti.html', scenario_result=scenario_result , login_id = login_id )
             
         elif conti:
             preprod_ai.draw_conti( preprod_ai.scenario, scenario_idx )
@@ -153,11 +181,12 @@ def conti():
             
             conti_result.append([ scene, image_data ])
         
-        return render_template( 'conti.html', conti_result=conti_result )
-    return render_template( 'conti.html' )
+        return render_template( 'conti.html', conti_result=conti_result , login_id = login_id )
+    return render_template( 'conti.html' , login_id = login_id )
     
 @app.route( '/character', methods = ['GET', 'POST'] )
 def character():
+    login_id = session.get('login_id', '')
     if request.method == 'POST':
         preprod_ai = main.PreprodAI()
 
@@ -177,7 +206,7 @@ def character():
             session['scenario_idx'] = scenario_idx
             scenario_result = markdown.markdown( scenario_result )
 
-            return render_template( 'character.html', scenario_result=scenario_result )
+            return render_template( 'character.html', scenario_result=scenario_result , login_id = login_id )
         
         elif character:
             character_result = preprod_ai.dev_character( preprod_ai.scenario, scenario_idx )
@@ -194,12 +223,18 @@ def character():
         preprod_ai.scenario = markdown.markdown( preprod_ai.scenario )
         character_result = markdown.markdown( character_result )
             
-        return render_template( 'character.html', scenario_result=preprod_ai.scenario, character_result=character_result )
+        return render_template( 
+                                'character.html', 
+                                scenario_result  = preprod_ai.scenario, 
+                                character_result = character_result ,
+                                login_id = login_id
+                                )
     
-    return render_template( 'character.html' )
+    return render_template( 'character.html' , login_id = login_id )
 
 @app.route( '/concept', methods = ['GET', 'POST'] )
 def concept():
+    login_id = session.get('login_id', '')
     if request.method == 'POST':
         preprod_ai = main.PreprodAI()
         preprod_ai.synop     = session.get('synop'     , '')
@@ -237,14 +272,16 @@ def concept():
 
         return render_template( 
                         'concept.html', 
-                        synop_result=preprod_ai.synop ,
-                        concept_img = image_data
+                        synop_result = preprod_ai.synop ,
+                        concept_img  = image_data,
+                        login_id = login_id 
         )
-    return  render_template( 'concept.html' )           
+    return  render_template( 'concept.html', login_id = login_id )           
 
 
 @app.route( '/ppt', methods = ['GET', 'POST'] )
 def ppt():
+    login_id = session.get('login_id', '')
     if request.method == 'POST':
         preprod_ai = main.PreprodAI()
 
@@ -268,7 +305,7 @@ def ppt():
             session['scenario_idx'] = scenario_idx
             scenario_result         = markdown.markdown( scenario_result )
 
-            return render_template( 'ppt.html', scenario_result=scenario_result )
+            return render_template( 'ppt.html', scenario_result=scenario_result, login_id = login_id )
 
         elif upload_scenario:
             file = request.files['select_file'] 
@@ -277,7 +314,7 @@ def ppt():
             with open( scenario_path ) as f:
                 scenario_result = f.read()
                 session['scenario'] = scenario_result
-            return render_template( "ppt.html", uploaded = True )
+            return render_template( "ppt.html", uploaded = True , login_id = login_id )
 
         elif download_ppt:
             print( '+' * 50 )
@@ -289,12 +326,13 @@ def ppt():
                 result = preprod_ai.write_ppt()
                 print( '^' * 50 )
                 print( result )
-                return render_template( "ppt.html", download_ppt = result )
+                return render_template( "ppt.html", download_ppt = result , login_id = login_id )
 
-    return render_template( 'ppt.html' )   
+    return render_template( 'ppt.html' , login_id = login_id )   
 
 @app.route( '/budget', methods = ['GET', 'POST'] )
 def budget():
+    login_id = session.get('login_id', '')
     if request.method == 'POST':
         preprod_ai = main.PreprodAI()
 
@@ -314,7 +352,7 @@ def budget():
             session['scenario_idx'] = scenario_idx
             scenario_result = markdown.markdown( scenario_result )
 
-            return render_template( 'budget.html', scenario_result=scenario_result )
+            return render_template( 'budget.html', scenario_result=scenario_result, login_id = login_id  )
         
         elif budget:
             schedule = db.load_schedule( scenario_idx )
@@ -330,12 +368,18 @@ def budget():
         preprod_ai.scenario = markdown.markdown( preprod_ai.scenario )
         budget_result = markdown.markdown( budget_result, extensions=['tables'] )
             
-        return render_template( 'budget.html', scenario_result=preprod_ai.scenario, budget_result=budget_result )
+        return render_template( 
+                                'budget.html', 
+                                scenario_result = preprod_ai.scenario, 
+                                budget_result   = budget_result,
+                                login_id = login_id 
+                                )
 
-    return render_template( 'budget.html' )
+    return render_template( 'budget.html', login_id = login_id )
 
 @app.route( '/schedule', methods = ['GET', 'POST'] )
 def schedule():
+    login_id = session.get('login_id', '')
     if request.method == 'POST':
         preprod_ai = main.PreprodAI()
 
@@ -355,7 +399,7 @@ def schedule():
             session['scenario_idx'] = scenario_idx
             scenario_result = markdown.markdown( scenario_result )
 
-            return render_template( 'schedule.html', scenario_result=scenario_result )
+            return render_template( 'schedule.html', scenario_result = scenario_result, login_id = login_id )
         
         elif schedule:
             schedule_result = preprod_ai.make_schedule( preprod_ai.scenario, scenario_idx )
@@ -373,13 +417,19 @@ def schedule():
         preprod_ai.scenario = markdown.markdown( preprod_ai.scenario )
         schedule_result = markdown.markdown( schedule_result )
             
-        return render_template( 'schedule.html', scenario_result=preprod_ai.scenario, schedule_result=schedule_result )
+        return render_template( 
+                                'schedule.html', 
+                                scenario_result = preprod_ai.scenario, 
+                                schedule_result = schedule_result ,
+                                login_id = login_id
+                                )
     return render_template( 
-                'schedule.html'
+                'schedule.html' , login_id = login_id 
             )
 
 @app.route( '/pdf', methods=[ 'GET', 'POST' ])
 def pdf_page():
+    login_id = session.get('login_id', '')
     if request.method == 'POST':
         if 'file' not in request.files:
             logging.error('No File in the request')
@@ -402,9 +452,9 @@ def pdf_page():
             final_results = pprint.pformat(results, indent=4)
             logging.info('Success to make SCENE List from PDF')
 
-            return render_template('pdf.html', result=final_results)
+            return render_template('pdf.html', result = final_results , login_id = login_id )
 
-    return render_template('pdf.html')
+    return render_template('pdf.html' , login_id = login_id )
 
 
 if __name__ == '__main__':
