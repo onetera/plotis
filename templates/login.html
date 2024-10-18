@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <a href="/">Back to Main</a>
+    <title>Scenario</title>
+    <style>
+        textarea::placeholder {
+            white-space: pre-line;
+        }
+        .synop {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            white-space: normal; /* 기본 줄바꿈 동작으로 설정 */
+            word-wrap: break-word; /* 긴 단어도 줄바꿈 되도록 설정 */
+            line-height:2;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+
+        }
+        .pre_text {
+            height: 500px;
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            white-space: normal; /* 기본 줄바꿈 동작으로 설정 */
+            word-wrap: break-word; /* 긴 단어도 줄바꿈 되도록 설정 */
+            line-height:2;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+
+        }
+        
+    </style>
+</head>
+<body>
+    <p><p>
+    {% if login_id %}
+        <h2>Already logged in</h2>
+        <form action="/logout" method="post">
+            <input name="logout" type="submit" value="Logout">
+        </form> 
+    {% else %}
+        <form action="/login" method="post">
+            <label for="login_id">Username :</label>
+            <input name="login_id" type="text" >
+            <p>
+            <label for="login_pw">Password :</label>
+            <input name="login_pw" type="password" >
+            <p>
+            <input type="submit" value="Login">
+        </form> 
+    {% endif %}
+</body>
+</html>
+
+
+
+
+
