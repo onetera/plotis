@@ -81,7 +81,7 @@ def synopsis():
                 return redirect( request.url )
             
             logging.info( 'Start to make synopsis list from keywords' )
-            preprod_ai.create_synop(keywords)
+            preprod_ai.write_synop(keywords)
             
         session['synop'] = preprod_ai.synop
 
@@ -111,8 +111,8 @@ def scenario():
             return redirect( request.url )
         
         logging.info( 'Start to make scenario form synopsis' )
-        preprod_ai.create_location()
-        preprod_ai.write_scene()
+        # preprod_ai.create_location()
+        preprod_ai.scenario = preprod_ai.write_scene( preprod_ai.synop )
     
     session['scenario'] = preprod_ai.scenario
 

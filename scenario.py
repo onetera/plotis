@@ -9,7 +9,7 @@ class Scenario( Core ):
                 synop = self.synop
             else:
                 return
-
+        
         search_msg = '{synop}'
         search_msg += '이 시스템은 한국 영화 시나리오 작가이다'
         search_msg += '이 시놉시스를 이용 해서 기승전결있는  {min}~{max}개의 장면을 만들어줘'
@@ -25,13 +25,13 @@ class Scenario( Core ):
         for row in response.split('\n'):
             loc_list.append( row.split(',') )
         self.loc = loc_list
-        return response
+        return self.loc
 
-    def write_scene( self ):
+    def write_scene( self, loc_list ):
         ## location 기반으로 작성
         synop_idx = self.db.search_synop_idx(self.synop)
 
-        for loc in self.loc:
+        for loc in loc_list:
             print( 'loc : ', loc )
             search_msg =  '이 시스템은 한국 영화 시나리오 작가이다.'
             search_msg += '이 장면의 번호는 {num}이다.'
