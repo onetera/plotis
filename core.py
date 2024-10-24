@@ -24,6 +24,9 @@ class Core( object ):
                     ' 이 시스템은 한국 영화 시나리오 작가이다. 이 시스템은 콘텐츠 정책을 준수 한다.'
         )
         self.db = db_conn.DBconn()
+
+        self.synop = ''
+        self.scene_list = []
         self.synopsis = ''
         self.scenario = ''
 

@@ -19,11 +19,15 @@ class PreprodAI( Core ):
     def write_synop( self, *key ):
         return Synop().write( key )
         
-    def write_scene( self ):
-        return Scenario().write()
+    def write_scene( self, synop ):
+        loc_list = Scenario().create_location( synop=synop )
+        return Scenario().write_scene( loc_list )
 
     def draw_conti( self, scenario, scenario_idx ):
         return Conti().draw_conti( scenario, scenario_idx )
+    
+    def save_conti( self, scenario_idx ):
+        return Conti().save_conti( scenario_idx )
 
     def dev_character( self, scenario, scenario_idx ):
         return Character().dev_character( scenario, scenario_idx )

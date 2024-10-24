@@ -1,7 +1,7 @@
 from core import Core
 
 
-class Budget( self ):
+class Budget( Core ):
     def set_budget( self, schedule, scenario_idx ):
         search_msg = '이 시스템은 유능한 콘텐츠 예산 분석가입니다.'
         search_msg += '다음 스케줄을 보고 예산을 디테일하게 짜주세요.'
