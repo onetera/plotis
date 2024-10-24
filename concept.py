@@ -1,4 +1,6 @@
 from core import Core
+import requests
+import shortuuid
 
 class Concept( Core ):
     def drawing_concept( self , synop):

@@ -314,6 +314,7 @@ def ppt():
             with open( scenario_path ) as f:
                 scenario_result = f.read()
                 session['scenario'] = scenario_result
+                session['scenario_idx'] = -1
             return render_template( "ppt.html", uploaded = True , login_id = login_id )
 
         elif download_ppt:
@@ -323,12 +324,19 @@ def ppt():
                 print( '=' * 50 )
                 print( 'session' )
                 preprod_ai.scenario = session['scenario']
-                result = preprod_ai.write_ppt()
+                ppt_path = preprod_ai.write_ppt( preprod_ai.scenario, scenario_idx )
+                download_ppt_result = url_for('download_ppt_file', ppt_path=ppt_path)
                 print( '^' * 50 )
-                print( result )
-                return render_template( "ppt.html", download_ppt = result , login_id = login_id )
+                print( ppt_path )
+                return render_template( "ppt.html", download_ppt_link = download_ppt_result, login_id = login_id )
 
     return render_template( 'ppt.html' , login_id = login_id )   
+
+@app.route('/download_ppt')
+def download_ppt_file():
+    ppt_path = request.args.get('ppt_path')
+    if ppt_path and os.path.exists(ppt_path):
+        return send_file(ppt_path, as_attachment=True)
 
 @app.route( '/budget', methods = ['GET', 'POST'] )
 def budget():
