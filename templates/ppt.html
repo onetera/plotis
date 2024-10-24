@@ -42,13 +42,14 @@
         <input name="select_file" type="file" value="Select File">
         <input name="upload_scenario" type="submit" value="Upload File"><p>
         <input name="download_ppt" type="submit" value="Write & Download PPT"> 
+        <input name="load_ppt" type="submit" value="Load PPT"> 
     </form>
     {% if uploaded %}
     <div>
     <p>Uploaded the scenario
     </div>
     {% endif %}
-    {% if download_ppt %}
+    {% if download_ppt_link %}
     <div>
         <ul>
             <li><a href="{{ download_ppt_link }}" download>Download PPT</a>

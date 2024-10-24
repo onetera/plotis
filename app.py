@@ -290,6 +290,7 @@ def ppt():
         load_scenario       = request.form.get( 'load_scenario'   , '' )
         upload_scenario     = request.form.get( 'upload_scenario' , '' )
         download_ppt        = request.form.get( 'download_ppt'    , '' )
+        load_ppt            = request.form.get( 'load_ppt'    , '' )
 
         print( )
         print( upload_scenario )
@@ -329,6 +330,11 @@ def ppt():
                 print( '^' * 50 )
                 print( ppt_path )
                 return render_template( "ppt.html", download_ppt_link = download_ppt_result, login_id = login_id )
+        
+        elif load_ppt:
+            ppt_path = os.path.join(os.getcwd(),'tmp', 'proposal.pptx')
+            download_ppt_result = url_for('download_ppt_file', ppt_path=ppt_path)
+            return render_template( "ppt.html", download_ppt_link = download_ppt_result, login_id = login_id )
 
     return render_template( 'ppt.html' , login_id = login_id )   
 
