@@ -2,7 +2,6 @@ __pycache__
 *.pyc
 *.sw?
 .ipynb_checkpoints/
-config.yml
 *.txt
 flask_session/
 tmp/*.log
