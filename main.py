@@ -26,7 +26,10 @@ class PreprodAI( Core ):
         return scenario.write_scene( loc_list, character_list )
 
     def draw_conti( self, scenario, scenario_idx ):
-        return Conti().draw_conti( scenario, scenario_idx )
+        if scenario_idx != -1:
+            return Conti().draw_conti( scenario, scenario_idx )
+        else:
+            return Conti().draw_conti_pdf( scenario, scenario_idx, 5 )
     
     def save_conti( self, scenario_idx ):
         return Conti().save_conti( scenario_idx )

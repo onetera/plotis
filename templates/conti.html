@@ -36,8 +36,10 @@
 <body>
     {% if login_id %}
     <p><p>
-    <form action="/conti" method="post"> 
+    <form action="/conti" method="post" enctype="multipart/form-data"> 
         <input name="load_scenario" type="submit" value="Load Scenario">
+        <input name="select_file" type="file" value="Select File">
+        <input name="upload_scenario" type="submit" value="Upload File"><p>
         <input name="load_conti" type="submit" value="Load Conti">
         <input name="conti" type="submit" value="Drawing Conti">
         <input name="save_conti" type="submit" value="Save Conti">
@@ -47,6 +49,11 @@
     <div>
         <p>
         <pre class="pre_text">{{ scenario_result | safe }}</pre>
+    </div>
+    {% endif %}
+    {% if uploaded %}
+    <div>
+    <p>Uploaded the scenario
     </div>
     {% endif %}
     {% if conti_result %}

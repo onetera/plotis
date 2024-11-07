@@ -66,6 +66,11 @@ class DBconn:
         self.cursor.execute( sql, ( scene, img_path, scenario_idx ) )
         self.con.commit()
     
+    def delete_conti( self, scenario_idx):
+        sql = 'DELETE FROM conti WHERE scenario_idx = ?;'
+        self.cursor.execute( sql, ( scenario_idx, ) )
+        self.con.commit()
+    
     def update_conti( self, scene, img_path, scenario_idx ):
         sql = 'UPDATE conti SET img_path = ? WHERE scene = ? AND scenario_idx = ?;'
         self.cursor.execute( sql, ( img_path, scene, scenario_idx ) )

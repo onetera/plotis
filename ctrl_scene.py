@@ -1,5 +1,7 @@
 
 import pymupdf4llm
+import ast
+import re
 
 
 def div_scene( chain , pdf_path, div_num ):
