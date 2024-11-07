@@ -2,20 +2,13 @@
 
 from flask import Flask, render_template, request, redirect, session, send_file, url_for
 from flask_session import Session
-from werkzeug.utils import secure_filename
 import markdown
-from openpyxl import load_workbook
 import base64
-from io import BytesIO
-from PIL import Image as PILImage
 
 import os
-import pickle
-import ast
 
 import pprint
 
-#import core
 import main 
 import importlib
 importlib.reload( main )
@@ -30,7 +23,6 @@ app.config['UPLOAD_FOLDER'] = './tmp'
 app.config['SESSION_TYPE'] = 'filesystem'  # 세션을 파일 시스템에 저장
 Session(app)
 db = db_conn.DBconn()
-
 
 @app.route( '/' )
 def main_page():
@@ -136,6 +128,7 @@ def conti():
         scenario_idx = session.get('scenario_idx', '')
         
         load_scenario = request.form.get( 'load_scenario'   , '' )
+        upload_scenario     = request.form.get( 'upload_scenario' , '' )
         conti = request.form.get( 'conti', '')
         load_conti = request.form.get( 'load_conti', '')
         save_conti = request.form.get( 'save_conti', '')
@@ -150,7 +143,17 @@ def conti():
             scenario_result = markdown.markdown( scenario_result )
 
             return render_template( 'conti.html', scenario_result=scenario_result , login_id = login_id )
-            
+        
+        elif upload_scenario:
+            file = request.files['select_file'] 
+            scenario_path = './tmp/uploaded/' + file.filename 
+            file.save( scenario_path )
+        
+            session['scenario'] = scenario_path
+            session['scenario_idx'] = -1
+
+            return render_template( "conti.html", uploaded = True , login_id = login_id )
+
         elif conti:
             preprod_ai.draw_conti( preprod_ai.scenario, scenario_idx )
             contis = db.load_conti( scenario_idx )
