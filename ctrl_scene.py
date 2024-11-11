@@ -1,8 +1,10 @@
 
 import pymupdf4llm
+import ast
+import re
 
 
-def div_scene( chain , pdf_path, div_num ):
+def div_scene( chain_method , pdf_path, div_num ):
     prompt  = "다음 시나리오를 장소 전환을 기준으로 장면을 분리한다."
     prompt += "장소나 시간이 전환됐을 때 반드시 장면구분을 한다."
     prompt += "장소가 전환될 때마다 새롭게 장면을 분리하며, 장소의 세부 위치도 반영한다."
@@ -34,7 +36,7 @@ def div_scene( chain , pdf_path, div_num ):
 
                 scenario_text += '\n'.join(edit_scenario)
 
-            chain = chain( prompt )                
+            chain = chain_method( prompt )                
             scenes = chain.invoke( {'scenario':scenario_text} )
 
         elif p == part_scen_len and last_scen_len != 0:
@@ -45,7 +47,7 @@ def div_scene( chain , pdf_path, div_num ):
 
                 scenario_text += '\n'.join(edit_scenario)
 
-            chain = chain( prompt )                
+            chain = chain_method( prompt )                
             scenes = chain.invoke( {'scenario':scenario_text} )
         
         else:
