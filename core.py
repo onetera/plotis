@@ -8,9 +8,8 @@ from langchain_core.prompts import SystemMessagePromptTemplate, HumanMessageProm
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
-import pymupdf4llm
-import ast
-import re
+import json
+import time
 
 class Core( object ):
     
@@ -52,4 +51,35 @@ class Core( object ):
         )
         chain = chat_prompt|self.client(0.5)| parser
         return chain
+    
+    def analyze_vfx_shot( self, scene ):
+        ass_id = 'asst_Qx0UbV8Tk8niKtFZ3jqkdi26'
+        ass = self.oai_client.beta.assistants.retrieve( ass_id )
+        th_id = 'thread_vvy3waB0VJ65n58i6F1axgh6'
+        thread = self.oai_client.bata.threads.retrieve( th_id )
+
+        scene += '\n위 시나리오 장면에서 VFX가 들어갈 요소를 골라줘'
+        message = self.oai_client.beta.threads.messages.create(
+            thread_id=thread.id,
+            role="user",
+            content= scene
+        )
+
+        run = self.oai_client.beta.threads.runs.create(
+            thread_id    = thread.id,
+            assistant_id = ass.id,
+            model        = "gpt-4o",
+        )
+
+        while run.status == 'queued' or run.status == 'in_progress':
+            run = self.oai_client.beta.threads.runs.retrieve(
+                    thread_id = thread.id,
+                    run_id = run.id,
+            )
+            time.sleep( 1 )
+        
+        msg = self.oai_client.beta.threads.messages.list( thread_id = thread.id )
+        #pprint( json.loads( msg.model_dump_json() )['data']['content'][0]['text']['value'] )
+        result = json.loads( msg.model_dump_json() )['data'][0]['content'][0]['text']['value'] 
+        return result
     

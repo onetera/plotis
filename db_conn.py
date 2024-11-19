@@ -43,14 +43,30 @@ class DBconn:
         # pprint( result )
         return result[0][0] 
     
-    def insert_scenario( self, content, synop_idx  ):
-        sql = 'INSERT INTO scenario (content, synop_idx) VALUES (?, ?);'
-        self.cursor.execute( sql, ( content, synop_idx ) )
+    def insert_scenario( self, content, synop_idx, created  ):
+        sql = 'INSERT INTO scenario (content, synop_idx, created) VALUES (?, ?, ?);'
+        self.cursor.execute( sql, ( content, synop_idx, created ) )
+        scenario_idx = self.cursor.lastrowid
         self.con.commit()
+        return scenario_idx
+    
+    def search_scenario_idx( self, content ):
+        if len(content) > 100:
+            content = content[:100]
+        sql = "SELECT idx FROM scenario WHERE content LIKE ?;"
+        self.cursor.execute( sql, ('%' + content + '%',) )
+        result = self.cursor.fetchall()        
+        return result
+    
+    def search_created( self, idx ):
+        sql = "SELECT created FROM scenario WHERE idx=?;"
+        self.cursor.execute( sql, ( idx, ))
+        result = self.cursor.fetchall()     
+        return result[0][0]
         
 
     def load_scenario( self, synop_idx ):
-        sql = "SELECT content FROM scenario WHERE synop_idx = ?;"
+        sql = "SELECT content FROM scenario WHERE (synop_idx = ? OR synop_idx IS NULL) ORDER BY idx DESC LIMIT 1;"
         self.cursor.execute( sql, ( synop_idx, ) )
         result = self.cursor.fetchall()
         return result
@@ -61,9 +77,26 @@ class DBconn:
         result = self.cursor.fetchall()
         return result
     
-    def insert_conti( self, scene, img_path, scenario_idx):
-        sql = 'INSERT INTO conti (scene, img_path, scenario_idx) VALUES (?, ?, ?);'
-        self.cursor.execute( sql, ( scene, img_path, scenario_idx ) )
+    def insert_div_scene(self, num, content, scenario_idx):
+        sql = 'INSERT INTO div_scenario (num, content, scenario_idx) VALUES (?, ?, ?);'
+        self.cursor.execute( sql, ( num, content, scenario_idx ) )
+        self.con.commit()
+    
+    def load_div_scene(self, scenario_idx):
+        sql = "SELECT * FROM div_scenario WHERE scenario_idx = ?;"
+        self.cursor.execute( sql, ( scenario_idx, ) )
+        result = self.cursor.fetchall()
+        return result
+    
+    def search_div_idx(self, num, scenario_idx):
+        sql = "SELECT idx FROM div_scenario WHERE num = ? AND scenario_idx = ?;"
+        self.cursor.execute( sql, ( num, scenario_idx, ) )
+        result = self.cursor.fetchall()
+        return result[0][0]
+
+    def insert_conti( self, img_path, div_idx):
+        sql = 'INSERT INTO conti (img_path, div_idx) VALUES (?, ?);'
+        self.cursor.execute( sql, ( img_path, div_idx ) )
         self.con.commit()
     
     def delete_conti( self, scenario_idx):
@@ -71,16 +104,11 @@ class DBconn:
         self.cursor.execute( sql, ( scenario_idx, ) )
         self.con.commit()
     
-    def update_conti( self, scene, img_path, scenario_idx ):
-        sql = 'UPDATE conti SET img_path = ? WHERE scene = ? AND scenario_idx = ?;'
-        self.cursor.execute( sql, ( img_path, scene, scenario_idx ) )
-        self.con.commit()
-
-    def load_conti( self, scenario_idx ):
-        sql = "SELECT * FROM conti WHERE scenario_idx = ?;"
-        self.cursor.execute( sql, ( scenario_idx, ) )
+    def load_conti( self, div_idx ):
+        sql = "SELECT img_path FROM conti WHERE div_idx = ?;"
+        self.cursor.execute( sql, ( div_idx, ) )
         result = self.cursor.fetchall()
-        return result
+        return result[0][0]
 
     def insert_character( self, characters, scenario_idx ):
         sql = 'INSERT INTO character (characters, scenario_idx) VALUES (?, ?);'
@@ -137,6 +165,22 @@ class DBconn:
 
     def load_budget( self, scenario_idx ):
         sql = "SELECT * FROM budget WHERE scenario_idx = ?;"
+        self.cursor.execute( sql, ( scenario_idx, ) )
+        result = self.cursor.fetchall()
+        return result
+    
+    def insert_ppt( self, ppt_path, scenario_idx ):
+        sql =  'INSERT INTO ppt ( ppt_path, scenario_idx) VALUES ( ?, ?);'
+        self.cursor.execute( sql, ( ppt_path, scenario_idx ) )
+        self.con.commit()
+    
+    def update_ppt( self, ppt_path, scenario_idx ):
+        sql = 'UPDATE ppt SET ppt_path = ? WHERE scenario_idx = ?;'
+        self.cursor.execute( sql, ( ppt_path, scenario_idx ) )
+        self.con.commit() 
+    
+    def load_ppt_path(self, scenario_idx):
+        sql = "SELECT ppt_path FROM ppt WHERE scenario_idx = ?;"
         self.cursor.execute( sql, ( scenario_idx, ) )
         result = self.cursor.fetchall()
         return result

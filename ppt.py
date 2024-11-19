@@ -13,22 +13,23 @@ from pptx.enum.text import PP_ALIGN
 class PPT( Core ):
     def write_ppt( self, scenario, scenario_idx ):
         search_msg  = '이 시스템은 영화 마케팅 전문가 입니다.'
+        search_msg += '\n'
         search_msg += '아래는 제작을 하려고 하는 시나리오 입니다'
         search_msg += '{body}'
-        search_msg += '해당 시나리오를 바탕으로 제작한 영화에 투자자들의 투자를 결정할 수 있는'
-        search_msg += '프레젠테이션 파일에 들어갈 슬라이드의 내용들은 아래와 같다'
-        search_msg += '['
-        search_msg += '영화 소개 : [ 제목, 캐치프레이즈, 장르, 예상 러닝타임, 타겟목표 관객층, 예상 관람등급 등 ]'
-        search_msg += '기획의도 : [ ],'
-        search_msg += '시놉시스 : [ ],'
-        search_msg += '관전포인트 : [ ],'
-        search_msg += '캐릭터 소개 : [ 나이, 직업, 성격, 특징 등 ], '
-        search_msg += ']'
-        search_msg += '이 내용들중 다른 키워드는 작성 하지 말고 반드시 아래의 형식을 따라서 작성해줘'
-        search_msg += '기획의도, 관전포인트, 캐릭터 소개는 반드시 감성적 서술체를 바탕으로 서정적인 표현과 비유를 활용해 작성해주세요'
-        search_msg += '기획의도는 900~1000자로 서술해주세요.'
-        search_msg += '관전포인트는 4가지 이상 번호로 구분해 관객의 감정에 직접적으로 호소해서 각 번호당 300~400자로 서술해주세요'
-        search_msg += '주요 캐릭터는 5명 이상 번호로 구분해 등장인물의 성격이 드러난 대사를 활용해 각 번호당 400~500자로 작성해주세요.'
+        search_msg += '\n'
+        search_msg += '위 시나리오를 바탕으로 제작한 영화에 투자자들의 투자를 결정할 수 있는'
+        search_msg += '프레젠테이션용 슬라이드 초안을 작성해주세요.'
+        search_msg += '슬라이드 주제와 포함 정보는 아래와 같다.'
+        search_msg += '\n'
+        search_msg += '슬라이드 구성안'
+        search_msg += '슬라이드 1: 영화 소개 - 제목, 캐치프레이즈, 장르, 예상 러닝타임, 타겟목표 관객층, 예상 관람등급 등'
+        search_msg += '슬라이드 2 : 기획의도 (서정적이고 감성적인 문체를 사용해 900 ~ 1000자 내외 작성),'
+        search_msg += '슬라이드 3: 시놉시스,'
+        search_msg += '슬라이드 4: 관전포인트 (4가지 이상, 각 포인트는 300~400자로 서술해 감정을 자극할 것),'
+        search_msg += '슬라이드 5: 캐릭터 소개 (주요 캐릭터 4명 이상 소개, 각 캐릭터의 특징이 드러나는 대사를 활용해 400~500자 서술)'
+        search_msg += '\n'
+        search_msg += '요구된 항목 외에 다른 키워드는 사용하지 말고 위의 가이드를 따라 작성'
+        search_msg += '\n'
         search_msg += '작성형식)### [슬라이드 1: 영화 소개]'
         search_msg += '- 제목: 영화 제목'
         search_msg += '### [슬라이드 2: 기획의도]'
@@ -100,7 +101,8 @@ class PPT( Core ):
             text_frame.word_wrap = True
 
             if slide_title == '시놉시스':
-                if scenario_idx != -1:
+                created = self.db.search_created(scenario_idx)
+                if created:
                     p = text_frame.add_paragraph()
                     p.text = self.db.last_synop()[0][1] 
                     p.font.size = Pt(14) 
@@ -123,6 +125,11 @@ class PPT( Core ):
 
         ppt_path = './tmp/proposal.pptx'
         prs.save(ppt_path)
+        search_ppt = self.db.load_ppt_path(scenario_idx)
+        if search_ppt:
+            self.db.update_ppt(ppt_path, scenario_idx)
+        else:
+            self.db.insert_ppt( ppt_path, scenario_idx )
         
         return ppt_path
 

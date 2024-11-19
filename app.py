@@ -17,6 +17,8 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 import db_conn
 
+from ctrl_scene import read_scene
+
 app = Flask( __name__ )
 
 app.config['UPLOAD_FOLDER'] = './tmp'
@@ -73,7 +75,7 @@ def synopsis():
                 return redirect( request.url )
             
             logging.info( 'Start to make synopsis list from keywords' )
-            preprod_ai.write_synop(keywords)
+            preprod_ai.synop = preprod_ai.write_synop(keywords)
             
         session['synop'] = preprod_ai.synop
 
@@ -95,6 +97,8 @@ def scenario():
     if load_scenario:
         synop_idx = db.search_synop_idx(preprod_ai.synop)
         last_scenario = db.load_scenario(synop_idx)
+        print(synop_idx)
+        print(last_scenario)
         preprod_ai.scenario = last_scenario[0][0]
     elif scenario:
 
@@ -150,18 +154,26 @@ def conti():
             os.makedirs(os.path.dirname(scenario_path), exist_ok=True)
 
             file.save( scenario_path )
-        
-            session['scenario'] = scenario_path
-            session['scenario_idx'] = -1
+
+            scenario_result = read_scene( scenario_path )
+            # db.insert_scenario( scenario_result, None, 0)
+            search_scenario_idx = db.search_scenario_idx( scenario_result )
+            if not search_scenario_idx:
+                scenario_idx = db.insert_scenario( scenario_result, None, 0)
+            else:
+                scenario_idx = search_scenario_idx[0][0]
+            
+            session['scenario'] = scenario_result
+            session['scenario_idx'] = scenario_idx
 
             return render_template( "conti.html", uploaded = True , login_id = login_id )
 
         elif conti:
             preprod_ai.draw_conti( preprod_ai.scenario, scenario_idx )
-            contis = db.load_conti( scenario_idx )
+            scenes = db.load_div_scene( scenario_idx )
         
         elif load_conti:
-            contis = db.load_conti( scenario_idx )
+            scenes = db.load_div_scene( scenario_idx )
         
         elif save_conti:
             conti_file = preprod_ai.save_conti( scenario_idx )
@@ -172,9 +184,9 @@ def conti():
             
         conti_result = []
 
-        for conti_data in contis:
-            scene = conti_data[1]
-            img_path = conti_data[2]
+        for scene_data in scenes:
+            scene = scene_data[2]
+            img_path = db.load_conti( scene_data[0] )
             
             scene = markdown.markdown( scene )
 
@@ -319,10 +331,17 @@ def ppt():
             os.makedirs(os.path.dirname(scenario_path), exist_ok=True)
 
             file.save( scenario_path )
-            with open( scenario_path ) as f:
-                scenario_result = f.read()
-                session['scenario'] = scenario_result
-                session['scenario_idx'] = -1
+
+            scenario_result = read_scene( scenario_path )
+            search_scenario = db.search_scenario_idx( scenario_result )
+            if not search_scenario:
+                scenario_idx = db.insert_scenario( scenario_result, None, 0)
+            else:
+                scenario_idx = search_scenario[0][0]
+                
+            session['scenario'] = scenario_result
+            session['scenario_idx'] = scenario_idx
+            
             return render_template( "ppt.html", uploaded = True , login_id = login_id )
 
         elif download_ppt:
@@ -332,6 +351,7 @@ def ppt():
                 print( '=' * 50 )
                 print( 'session' )
                 preprod_ai.scenario = session['scenario']
+                scenario_idx = session['scenario_idx']
                 ppt_path = preprod_ai.write_ppt( preprod_ai.scenario, scenario_idx )
                 download_ppt_result = url_for('download_ppt_file', ppt_path=ppt_path)
                 print( '^' * 50 )
@@ -339,9 +359,13 @@ def ppt():
                 return render_template( "ppt.html", download_ppt_link = download_ppt_result, login_id = login_id )
         
         elif load_ppt:
-            ppt_path = os.path.join(os.getcwd(),'tmp', 'proposal.pptx')
-            download_ppt_result = url_for('download_ppt_file', ppt_path=ppt_path)
-            return render_template( "ppt.html", download_ppt_link = download_ppt_result, login_id = login_id )
+            scenario_idx = session['scenario_idx']
+            ppt_path = db.load_ppt_path( scenario_idx )
+            if ppt_path:
+                download_ppt_result = url_for('download_ppt_file', ppt_path=ppt_path[0][0])
+                return render_template( "ppt.html", download_ppt_link = download_ppt_result, login_id = login_id )
+            else:
+                return render_template( 'ppt.html' , login_id = login_id )  
 
     return render_template( 'ppt.html' , login_id = login_id )   
 
