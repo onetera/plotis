@@ -23,13 +23,10 @@ class PreprodAI( Core ):
         scenario = Scenario()
         loc_list = scenario.create_location( synop=synop )
         character_list = scenario.create_character( synop=synop )
-        return scenario.write_scene( loc_list, character_list )
+        return scenario.write_scene( loc_list, character_list, synop=synop )
 
     def draw_conti( self, scenario, scenario_idx ):
-        if scenario_idx != -1:
-            return Conti().draw_conti( scenario, scenario_idx )
-        else:
-            return Conti().draw_conti_pdf( scenario, scenario_idx, 5 )
+        return Conti().draw_conti( scenario, scenario_idx, 4000 )
     
     def save_conti( self, scenario_idx ):
         return Conti().save_conti( scenario_idx )
