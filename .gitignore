@@ -7,3 +7,4 @@ flask_session/
 tmp/*.log
 tmp/*.pid
 tmp/*.sock
+config.yml
