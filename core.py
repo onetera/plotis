@@ -56,7 +56,7 @@ class Core( object ):
         ass_id = 'asst_Qx0UbV8Tk8niKtFZ3jqkdi26'
         ass = self.oai_client.beta.assistants.retrieve( ass_id )
         th_id = 'thread_vvy3waB0VJ65n58i6F1axgh6'
-        thread = self.oai_client.bata.threads.retrieve( th_id )
+        thread = self.oai_client.beta.threads.retrieve( th_id )
 
         scene += '\n위 시나리오 장면에서 VFX가 들어갈 요소를 골라줘'
         message = self.oai_client.beta.threads.messages.create(
