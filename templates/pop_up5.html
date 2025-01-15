@@ -1,0 +1,29 @@
+<div id="popupOverlay" class="popup-overlay">
+    <div class="popup" id="popupContainer">
+      <button class="close-btn" id="closePopup">X</button>
+      <form>
+          <!-- 라디오 버튼 그룹 -->
+          <fieldset>
+              <!-- 10개의 라디오 버튼 -->
+              <ul>
+                  {% for data in popup_data %}
+                  <li>
+                      <label for="Character{{ data[0] }}">
+                          <input type="radio" id="Character{{ data[0] }}" name="contentOptionv" value="{{ data[0] }}"> Character {{ loop.index }}
+                      </label>
+                  </li>
+                  {% endfor %}
+              </ul>
+          </fieldset>
+      </form>
+      <button id="startTyping" class="btn_in2"><i class="fa-solid fa-magnifying-glass"></i> Load Character</button>
+  </div>
+</div>
+
+{% for data in popup_data %}
+<div id="hiddenContentv{{ data[0] }}" style="display: none;">
+  <p>
+      {{ data[1] }}
+  </p>
+</div>
+{% endfor %}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_레이어_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 141.7 141.7">
+  <!-- Generator: Adobe Illustrator 29.0.0, SVG Export Plug-In . SVG Version: 2.1.0 Build 186)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+        stroke: #222120;
+        stroke-linecap: round;
+        stroke-miterlimit: 10;
+        stroke-width: 8.5px;
+      }
+    </style>
+  </defs>
+  <line class="st0" x1="21.2" y1="55.8" x2="121.2" y2="55.8"/>
+  <line class="st0" x1="71.2" y1="15.8" x2="21.2" y2="45.8"/>
+  <line class="st0" x1="121.2" y1="45.8" x2="71.2" y2="15.8"/>
+  <line class="st0" x1="126.2" y1="125.8" x2="16.2" y2="125.8"/>
+  <line class="st0" x1="21.2" y1="105.8" x2="16.2" y2="125.8"/>
+  <line class="st0" x1="121.2" y1="105.8" x2="126.2" y2="125.8"/>
+  <line class="st0" x1="21.2" y1="105.8" x2="121.2" y2="105.8"/>
+  <line class="st0" x1="51.2" y1="55.8" x2="51.2" y2="105.8"/>
+  <line class="st0" x1="71.2" y1="55.8" x2="71.2" y2="105.8"/>
+  <line class="st0" x1="91.2" y1="55.8" x2="91.2" y2="105.8"/>
+  <line class="st0" x1="111.2" y1="55.8" x2="111.2" y2="105.8"/>
+  <line class="st0" x1="21.2" y1="45.8" x2="21.2" y2="55.8"/>
+  <line class="st0" x1="121.2" y1="45.8" x2="121.2" y2="55.8"/>
+  <line class="st0" x1="31.2" y1="55.8" x2="31.2" y2="105.8"/>
+</svg>

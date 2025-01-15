@@ -1,0 +1,75 @@
+<div class="ds_header">
+  <div class="ds_logo">
+      <a href="/dashboard">
+      <ul class="logo_ci">
+          <li class="logo_ci_wh"><img src="/static/img/logo_ci.svg"></li>
+          <li class="logo_txt"><img src="/static/img/logo_txt.svg"></li>
+      </ul>
+      </a>
+  </div>
+  <div class="ds_home">
+      <a href="/"><i class="fa-solid fa-house"></i></a>
+      {% if login_id %}
+        <br/>Logged in: {{ login_id }}
+      {% else %}
+        <br/>Need to Login
+      {% endif %}
+      <!-- <br/>Loggedin : west -->
+  </div>
+</div>
+  <input type="checkbox" class="openSidebarMenu" id="openSidebarMenu">
+  <label for="openSidebarMenu" class="sidebarIconToggle">
+    <div class="spinner diagonal part-1"></div>
+    <div class="spinner horizontal"></div>
+    <div class="spinner diagonal part-2"></div>
+  </label>
+
+  <div id="sidebarMenu">
+    <ul class="sidebarMenuInner">
+      <label for="openSidebarMenu">
+          <li class="icon_up">
+              <a href="/synopsis"><img src="/static/img/svg/synop.svg" class="svg-icon" title="synopsis" alt="synopsis"><span>synopsis</span></a>
+          </li>
+      </label>
+      <label for="openSidebarMenu">
+          <li class="icon_up">
+             <a href="/scenario"><img src="/static/img/svg/scen.svg" class="svg-icon" title="scenario" alt="scenario"><span>scenario</span></a>
+          </li>
+        </label>
+      <label for="openSidebarMenu">
+          <li class="icon_up">
+             <a href="/conti"><img src="/static/img/svg/conti.svg" class="svg-icon" title="conti" alt="conti"><span>conti</span></a>
+          </li>
+      </label>
+      <label for="openSidebarMenu">
+          <li class="icon_up">
+             <a href="/concept"><img src="/static/img/svg/concept.svg" class="svg-icon" title="concept art" alt="concept art"><span>concept art</span></a>
+          </li>
+      </label>
+      <label for="openSidebarMenu">
+          <li class="icon_up">
+             <a href="/character"><img src="/static/img/svg/char.svg" class="svg-icon" title="dev character" alt="dev character"><span>dev character</span></a>
+          </li>
+      </label>
+      <label for="openSidebarMenu">
+          <li class="icon_up">
+             <a href="/schedule"><img src="/static/img/svg/schdul.svg" class="svg-icon" title="scheduling" alt="scheduling"><span>scheduling</span></a>
+          </li>
+      </label>
+      <label for="openSidebarMenu">
+          <li class="icon_up">
+             <a href="/budget"><img src="/static/img/svg/budget.svg" class="svg-icon" title="budgeting" alt="budgeting"><span>budgeting</span></a>
+          </li>
+      </label>
+      <label for="openSidebarMenu">
+          <li class="icon_up">
+             <a href="/ppt"><img src="/static/img/svg/ppt.svg" class="svg-icon" title="PPT" alt="PPT"><span>PPT</span></a>
+          </li>
+      </label>
+      <label for="openSidebarMenu">
+          <li class="icon_up">
+             <a href="/previz"><img src="/static/img/svg/previz.svg" class="svg-icon" title="previz" alt="previz"><span>Previz</span></a>
+          </li>
+      </label>
+    </ul>
+  </div>

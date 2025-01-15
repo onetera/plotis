@@ -1,67 +1,100 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <a href="/">Back to Main</a>
-    <title>Scenario</title>
-    <style>
-        textarea::placeholder {
-            white-space: pre-line;
-        }
-        .synop {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-            white-space: normal; /* 기본 줄바꿈 동작으로 설정 */
-            word-wrap: break-word; /* 긴 단어도 줄바꿈 되도록 설정 */
-            line-height:2;
-            overflow-y: scroll;
-            border: 1px solid #ccc;
-
-        }
-        .pre_text {
-            height: 500px;
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-            white-space: normal; /* 기본 줄바꿈 동작으로 설정 */
-            word-wrap: break-word; /* 긴 단어도 줄바꿈 되도록 설정 */
-            line-height:2;
-            overflow-y: scroll;
-            border: 1px solid #ccc;
-
-        }
-        
-    </style>
+<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width">
+<meta charset="UTF-8">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome/all.min.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+<script src="{{ url_for('static', filename='js/kaiser.js') }}"></script>
+<script src="{{ url_for('static', filename='js/fontawesome.js') }}"></script>
+<title>scenario</title>
 </head>
 <body>
-    {% if login_id %}
-    <p><p>
-    <form action="/scenario" method="post">
-        <input name="load_scenario" type="submit" value="Load Scenario">
-        <input name="scenario" type="submit" value="Writing Scenario">
-    </form> 
-    {% if synopsis_result %}
-    <h1>AI Synopsis</h1>
-    <div>
-        <p>
-        <pre class="synop">{{ synopsis_result }}</pre>
+<div id="sidebar">
+    {% include 'sidebar.html' %}
+</div>
+<div id='center' class="dashboard_wp">
+    <div class="dashbox">
+        {% if login_id %}
+        <div class="dashbox_tit">scenario</div>
+        <ul>
+            <li><button class="btn_in2 openPopup" data-file="pop_up.html" data-target="typingContainer"><i class="fa-solid fa-magnifying-glass"></i> Load Synopsis</button></li>
+        </ul>
+        <div class="dashsnopbox" id="dashsnopbox">
+            <!-- <h2>Synopsis</h2> -->
+            <div id="typingContainer">
+                <!-- {{ synopsis_result | safe }} -->
+            </div>
+        </div>
+        <ul id="senbtnbox" class="senbtnbox">
+            <li><button class="btn_in2 openPopup2" data-file="pop_up2.html" data-target="typingContainerz" name="load_scenario"><i class="fa-solid fa-magnifying-glass"></i> Load Scenario</button></li>
+            <li><a href=""><button class="btn_in2"><i class="fa-solid fa-pen-nib"></i> Writing Scenario</button></a></li>
+            <li><a href=""><button class="btn_in2 dwnbtn"><i class="fa-solid fa-download"></i> Download Scenario</button></a></li>
+        </ul>
+        <div class="dashscenpbox" id="dashscenpbox">
+            <!-- <h2>Scenario</h2> -->
+            <div id="typingContainerz"></div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+        <script>
+            document.querySelector(".dwnbtn").addEventListener("click", async function (event) {
+            event.preventDefault();
+
+            const contentBox = document.getElementById("dashscenpbox");
+
+            if (!contentBox || contentBox.textContent.trim() === "") {
+                alert("내용이 없습니다.");
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+
+            try {
+                // HTML 콘텐츠를 이미지로 캡처
+                const canvas = await html2canvas(contentBox, {
+                    useCORS: true,     // CORS 문제 방지
+                    scale: 5,          // 고해상도
+                    allowTaint: true,  // 보안 허용
+                });
+
+                const imgData = canvas.toDataURL("image/png");
+                const doc = new jsPDF("p", "mm", "a4");
+
+                // 이미지 추가
+                const pdfWidth = doc.internal.pageSize.getWidth();
+                const pdfHeight = canvas.height * pdfWidth / canvas.width;
+
+                doc.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+                doc.save("scenario.pdf");
+            } catch (error) {
+                console.error("PDF 생성 오류:", error);
+                alert("PDF 생성에 실패했습니다.");
+            }
+        });
+        </script>
+
+        {% else %}
+            <div class="dashbox_tit">Scenario</div>
+            <p><a href="/login">Login</a>
+            <p>
+                
+        {% endif %}
     </div>
-    {% endif %}
-    {% if scenario_result %}
-    <h1>AI Scenario</h1>
-    <div>
-        <p>
-        <pre class="pre_text">{{ scenario_result | safe }}</pre>
-    </div>
-    {% endif %}
-    {% else %}
-        <h1>AI Scenario</h1>
-        <p><a href="/login">Login</a>
-        <p>
-    {% endif %}
+<div id="popupContainer"></div>
+</div>
+
+<script type="module" src="{{ url_for('static', filename='js/scenario.js') }}"></script>
+<script src="{{ url_for('static', filename='js/plotis.js') }}"></script>
+<script src="{{ url_for('static', filename='js/drop.js') }}"></script>
+<script src="{{ url_for('static', filename='js/pdf.js') }}"></script>
 </body>
 </html>
 

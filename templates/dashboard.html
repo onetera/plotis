@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<head>
+<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width">
+<meta charset="UTF-8">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.css">
+<script src="{{ url_for('static', filename='js/kaiser.js') }}"></script>
+<script src="{{ url_for('static', filename='js/fontawesome.js') }}"></script>
+<title>dashboard</title>
+<!-- <script>
+fetch('/static/sidebar.html')
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById('sidebar').innerHTML = data;
+    })
+</script> -->
+</head>
+<body>
+<div id="sidebar">
+    {% include 'sidebar.html' %}
+</div>
+<div id='center' class="dashboard_wp">
+  <div class="dashboard_mid">
+    <div class="dash-card">
+      <div class="dash-left">
+          <div class="dash-circle">
+              <img src="{{ url_for('static', filename='img/img_ai_1.png') }}" alt=""></script>
+          </div>
+      </div>
+      <div class="dash-right">
+          <h3>Card 1</h3>
+          <p>TEXT</p>
+          <button class="btn_wte">NOW <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-left">
+          <div class="dash-circle circle-g">
+          </div>
+      </div>
+      <div class="dash-right">
+          <h3>Card 2</h3>
+          <p>TEXT</p>
+          <button class="btn_wte btn_skble">NOW <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-left">
+          <div class="dash-circle">
+          </div>
+      </div>
+      <div class="dash-right">
+          <h3>Card 3</h3>
+          <p>TEXT</p>
+          <button class="btn_wte btn_skble">NOW <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+  <div class="dashboard_mid dashboard_con">
+    <div class="pjt_box">
+        <div class="pjt_con">
+          <div class="bk_style"></div>
+          <div class="pjt_con_top">
+              <i class="fa-solid fa-clapperboard"></i> Feature Film
+              <h1>Untitled Projuct</h1>
+              <h4>LAST EDITED 1 DAY AGO</h4>
+          </div>
+          <div class="pjt_con_md">
+              <p>
+                  plot out plot out plot<br/> out plot out plot out plot out plot out
+                  plot out plot out plot out plot out plot out plot out plot out
+                  plot out plot out plot out plot out plot out plot out plot out
+                  plot out plot out plot out plot out plot out plot out plot out
+                  plot out plot out plot out plot out plot out plot out plot out
+                  plot out plot out plot out plot out plot out plot out plot out
+              </p>
+          </div>
+          <div class="pjt_con_btm">
+              <i class="fa-regular fa-image"></i>
+          </div>
+        </div>
+    </div>
+    <div class="pjt_box">
+        <div class="pjt_con">
+          <div class="bk_style"></div>
+          <div class="pjt_con_top">
+              <i class="fa-solid fa-clapperboard"></i> Feature Film
+              <h1>Untitled Projuct</h1>
+              <h4>LAST EDITED 1 DAY AGO</h4>
+          </div>
+          <div class="pjt_con_md">
+              <p>
+                  plot out plot out plot<br/> out plot out plot out plot out plot out
+                  plot out plot out plot out plot out plot out plot out plot out
+                  plot out plot out plot out plot out plot out plot out plot out
+                  plot out plot out plot out plot out plot out plot out plot out
+                  plot out plot out plot out plot out plot out plot out plot out
+                  plot out plot out plot out plot out plot out plot out plot out
+              </p>
+          </div>
+          <div class="pjt_con_btm">
+              <img src="{{ url_for('static', filename='img/sp3.jpg') }}"></script>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='js/plotis.js') }}"></script>
+<script src="{{ url_for('static', filename='js/drop.js') }}"></script>
+</body>
+</html>

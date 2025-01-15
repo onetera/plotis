@@ -1,0 +1,20 @@
+<div id="popupOverlay" class="popup-overlay">
+    <div class="popup" id="popupContainer">
+      <button class="close-btn" id="closePopup"><i class="fa-solid fa-xmark"></i></button>
+      <form>
+          <!-- 라디오 버튼 그룹 -->
+          <fieldset>
+              <ul>
+                  {% for data in popup_data %}
+                    <li>
+                        <label for="Synop{{ data[0] }}">
+                            <input type="radio" id="Synop{{ data[0] }}" name="contentOption" value="{{ data[0] }}" data-synopsis="{{ data[1] }}"> Synop {{ loop.index }}
+                        </label>
+                    </li>
+                  {% endfor %}
+              </ul>
+          </fieldset>
+      </form>
+      <button id="startTyping" class="btn_in2" data-target="typingContainer"><i class="fa-solid fa-magnifying-glass"></i> Load Synop</button>
+  </div>
+</div>

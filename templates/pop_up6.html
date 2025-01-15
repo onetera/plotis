@@ -1,0 +1,28 @@
+<div id="popupOverlay" class="popup-overlay">
+    <div class="popup" id="popupContainer">
+      <button class="close-btn" id="closePopup">X</button>
+      <form>
+          <!-- 라디오 버튼 그룹 -->
+          <fieldset>
+              <ul>
+                  {% for data in popup_data %}
+                  <li>
+                      <label for="Schedule{{ data[0] }}">
+                          <input type="radio" id="Schedule{{ data[0] }}" name="contentOptiondu" value="{{ data[0] }}" data-schedule="{{ data[1]|tojson|safe }}"> Schedule {{ loop.index }}
+                      </label>
+                  </li>
+                  {% endfor %}
+              </ul>
+          </fieldset>
+      </form>
+      <button id="startTyping" class="btn_in2"><i class="fa-solid fa-magnifying-glass"></i> Load Schedule</button>
+  </div>
+</div>
+
+{% for data in popup_data %}
+<div id="hiddenContentdu{{ data[0] }}" style="display: none;">
+    <div class="progress_box">
+        <div id="schedule" class="schedule-container"></div>
+    </div>
+</div>
+{% endfor %}
