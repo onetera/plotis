@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_레이어_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 141.7 141.7">
+  <!-- Generator: Adobe Illustrator 29.0.0, SVG Export Plug-In . SVG Version: 2.1.0 Build 186)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+        stroke: #222120;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 8.5px;
+      }
+    </style>
+  </defs>
+  <line class="st0" x1="51.2" y1="15.8" x2="51.2" y2="35.8"/>
+  <line class="st0" x1="91.2" y1="15.8" x2="91.2" y2="35.8"/>
+  <line class="st0" x1="51.2" y1="35.8" x2="91.2" y2="35.8"/>
+  <line class="st0" x1="91.2" y1="15.8" x2="51.2" y2="15.8"/>
+  <line class="st0" x1="26.2" y1="25.8" x2="51.2" y2="25.8"/>
+  <line class="st0" x1="116.2" y1="25.8" x2="91.2" y2="25.8"/>
+  <line class="st0" x1="116.2" y1="125.8" x2="116.2" y2="25.8"/>
+  <line class="st0" x1="26.2" y1="25.8" x2="26.2" y2="125.8"/>
+  <line class="st0" x1="116.2" y1="125.8" x2="26.2" y2="125.8"/>
+  <circle class="st0" cx="71.2" cy="70.8" r="15"/>
+  <path class="st0" d="M46.2,105.8c0-11.1,8.9-20,20-20"/>
+  <line class="st0" x1="76.2" y1="85.8" x2="66.2" y2="85.8"/>
+  <path class="st0" d="M96.2,105.8c0-11.1-8.9-20-20-20"/>
+  <line class="st0" x1="46.2" y1="105.8" x2="96.2" y2="105.8"/>
+</svg>

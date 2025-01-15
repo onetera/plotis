@@ -35,6 +35,20 @@ class DBconn:
         self.cursor.execute( sql )
         result = self.cursor.fetchall()
         return result
+    
+    def last_5_synop( self ):
+        sql = "SELECT * FROM synopsis ORDER BY idx DESC LIMIT 5"
+        self.cursor.execute( sql )
+        result = self.cursor.fetchall()
+        return result
+    
+    def search_synop_using_idx( self, idx ):
+        sql = "SELECT * FROM synopsis WHERE idx=?;"
+        self.cursor.execute( sql, (idx,) )
+        result = self.cursor.fetchall()        
+        # pprint( result )
+        return result[0][1]
+
 
     def search_synop_idx( self, body ):
         sql = "SELECT idx FROM synopsis WHERE body LIKE ?;"
@@ -66,8 +80,15 @@ class DBconn:
         
 
     def load_scenario( self, synop_idx ):
-        sql = "SELECT content FROM scenario WHERE (synop_idx = ? OR synop_idx IS NULL) ORDER BY idx DESC LIMIT 1;"
+        sql = "SELECT * FROM scenario WHERE (synop_idx = ? OR synop_idx IS NULL) ORDER BY idx DESC LIMIT 1;"
+        # sql = "SELECT content FROM scenario WHERE (synop_idx = ? OR synop_idx IS NULL) ORDER BY idx DESC LIMIT 1;"
         self.cursor.execute( sql, ( synop_idx, ) )
+        result = self.cursor.fetchall()
+        return result
+    
+    def last_5_scenario( self ):
+        sql = "SELECT * FROM scenario ORDER BY idx DESC LIMIT 5"
+        self.cursor.execute( sql )
         result = self.cursor.fetchall()
         return result
     
@@ -181,6 +202,12 @@ class DBconn:
     
     def load_ppt_path(self, scenario_idx):
         sql = "SELECT ppt_path FROM ppt WHERE scenario_idx = ?;"
+        self.cursor.execute( sql, ( scenario_idx, ) )
+        result = self.cursor.fetchall()
+        return result
+
+    def load_ppt(self, scenario_idx):
+        sql = "SELECT * FROM ppt WHERE scenario_idx = ?;"
         self.cursor.execute( sql, ( scenario_idx, ) )
         result = self.cursor.fetchall()
         return result

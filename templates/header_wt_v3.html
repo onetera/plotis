@@ -1,0 +1,36 @@
+<header>
+  <div class="header">
+    <nav>
+      <input type="checkbox" id="show-menu">
+      <label for="show-menu" class="menu-icon mi2">
+         <span></span>
+         <span></span>
+         <span></span>
+      </label>
+      <div class="header-box">
+      <div class="ds_logo">
+            <a href="/">
+              <ul class="logo_ci logo_ci2">
+                  <li class="logo_ci_wh"><img src="/static/img/logo_ci.svg"></li>
+                  <li class="logo_txt"><img src="/static/img/logo_txt.svg"></li>
+              </ul>
+            </a>
+      </div>
+        <ul class="links">
+          {% if login_id %}
+            <li class="dh"><a href="/dashboard">Dashboard</a></li>
+          {% endif %}
+          <li class="au"><a href="/aboutus">About us</a></li>
+          <li class="fe"><a href="/features">Features</a></li>
+          <li class="ct"><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+      {% if login_id %}
+        <a href="/logout"><button class="btn_in2">Logout</button></a>
+      {% else %}
+        <a href="/login"><button class="btn_in2">Login</button></a>
+      {% endif %}
+      <!-- <a href="/logout"><button class="btn_in2">Logout</button></a> -->
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,26 @@
+<div id="popupOverlay" class="popup-overlay">
+    <div class="popup" id="popupContainer">
+      <button class="close-btn" id="closePopup">X</button>
+      <form>
+          <!-- 라디오 버튼 그룹 -->
+          <fieldset>
+              <ul>
+                  {% for data in popup_data %}
+                  <li>
+                    <label for="Scen{{ data[0] }}">
+                        <input type="radio" id="Scen{{ data[0] }}" name="contentOptionz" value="{{ data[0] }}" data-scenario="{{ data[1][:1000] }} ..이하 생략"> Scenario {{ loop.index }}
+                    </label>
+                  </li>
+                  {% endfor %}
+              </ul>
+          </fieldset>
+      </form>
+      <button id="startTyping" class="btn_in2" data-target="typingContainerz"><i class="fa-solid fa-magnifying-glass"></i> Load Scenario</button>
+  </div>
+</div>
+<style>
+  h1 {color:#ff0000; font-size:2em;}
+  #html-output ul {text-align: left !important;}
+  #html-output h2 {background:#f4f4f4; padding:20px;}
+  #html-output p {padding:0;}
+</style>

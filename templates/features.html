@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<head>
+<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width">
+<meta charset="UTF-8">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css">
+<script src="https://kit.fontawesome.com/588b11f67f.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/kaiser.js') }}"></script>
+<title>features</title>
+<script>
+// fetch('/static/header_wt.html')
+//     .then(response => response.text())
+//     .then(data => {
+//         document.getElementById('header_wt').innerHTML = data;
+//     })
+fetch('/static/footer.html')
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById('footer').innerHTML = data;
+    })
+</script>
+<style>
+  .fe a {background:#ccc;}
+</style>
+</head>
+<body>
+<div id="header_wt">
+    {% include 'header_wt.html' %}
+</div> <!--header 불러오기-->
+<div class="slider">
+    <div class="slide img2">
+        <h2 class="slide-desc slide-desc2 desc_set">Features</h2>
+        <p class="slide-title desc_tit_set ">Plotis와의 협업으로<br/> 영화 제작 공정을 간편화하세요</p>
+    </div>
+</div>
+<div class="contents_box mgt50">
+    <div class="contents_wrap">
+        <div class="respon_card_box">
+            <div class="respon_card">
+                <img src="{{ url_for('static', filename='img/svg/synop.svg') }}" alt=""/>
+                <h3>Synopsis</h3>
+                <p>여러 키워드를 입력하면 시놉시스를 빠르게 생성합니다.</p>
+            </div>
+            <div class="respon_card">
+                <img src="{{ url_for('static', filename='img/svg/scen.svg') }}" alt=""/>
+                <h3>Scenario</h3>
+                <p>AI가 시놉시스를 읽고 장편영화 시나리오를 생성합니다.</p>
+            </div>
+            <div class="respon_card">
+                <img src="{{ url_for('static', filename='img/svg/conti.svg') }}" alt=""/>
+                <h3>Conti</h3>
+                <p>시나리오 씬별 콘티를 스케치 형식으로 생성합니다.</p>
+            </div>
+        </div>
+        <div class="respon_card_box">
+            <div class="respon_card">
+                <img src="{{ url_for('static', filename='img/svg/concept.svg') }}" alt=""/>
+                <h3>Concept Art</h3>
+                <p>시나리오를 바탕으로 영화 전반을 아우를 수 있는 컨셉아트 이미지를 생성합니다.</p>
+            </div>
+            <div class="respon_card">
+                <img src="{{ url_for('static', filename='img/svg/char.svg') }}" alt=""/>
+                <h3>Dev Character</h3>
+                <p>나이, 직업, 성격, 외형 등 주요 캐릭터들을 분석합니다.</p>
+            </div>
+            <div class="respon_card">
+                <img src="{{ url_for('static', filename='img/svg/schdul.svg') }}" alt=""/>
+                <h3>Scheduling</h3>
+                <p>프리프로덕션부터 홍보까지 영화 제작의 모든 일정을 손쉽게 구성해보세요.</p>
+            </div>
+        </div>
+        <div class="respon_card_box">
+            <div class="respon_card">
+                <img src="{{ url_for('static', filename='img/svg/budget.svg') }}" alt=""/>
+                <h3>Budgeting</h3>
+                <p>알고리즘이 시나리오와 스케줄을 모두 파악해 필요 예산을 추정합니다.</p>
+            </div>
+            <div class="respon_card">
+                <img src="{{ url_for('static', filename='img/svg/ppt.svg') }}" alt=""/>
+                <h3>PPT</h3>
+                <p>개요, 기획의도, 시놉시스, 관전포인트, 주요 캐릭터 설명이 담긴 ppt를 생성합니다.</p>
+            </div>
+            <div class="respon_card">
+                <img src="{{ url_for('static', filename='img/svg/previz.svg') }}" alt=""/>
+                <h3>Previz (Coming Soon)</h3>
+                <p>AI와 알고리즘을 활용해 시나리오의 프리비즈 영상을 제작합니다.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="footer"></div><!--footer 불러오기-->
+
+</body>
+</html>

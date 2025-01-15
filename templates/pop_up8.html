@@ -1,0 +1,26 @@
+<div id="popupOverlay" class="popup-overlay">
+    <div class="popup" id="popupContainer">
+      <button class="close-btn" id="closePopup">X</button>
+      <form>
+          <!-- 라디오 버튼 그룹 -->
+          <fieldset>
+              <ul>
+                  {% for data in popup_data %}
+                  <li>
+                      <label for="PPT{{ data[0] }}">
+                          <input type="radio" id="PPT{{ data[0] }}" name="contentOptionpt" value="{{ data[0] }}"> PPT {{ loop.index }}
+                      </label>
+                  </li>
+                  {% endfor %}
+              </ul>
+          </fieldset>
+      </form>
+      <button id="startTyping" class="btn_in2"><i class="fa-solid fa-magnifying-glass"></i> Load PPT</button>
+  </div>
+</div>
+
+{% for data in popup_data %}
+    <div id="hiddenContentpt{{ data[0] }}" style="display: none;">
+      <a href="{{ url_for('use_tmp_file', filename=data[1][6:]) }}" download>Download PPT</a>
+    </div>
+{% endfor %}

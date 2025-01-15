@@ -1,52 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <a href="/">Back to Main</a>
-    <title>Concept</title>
-    <style>
-        textarea::placeholder {
-            white-space: pre-line;
-        }
-        .synop {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-            white-space: normal; /* 기본 줄바꿈 동작으로 설정 */
-            word-wrap: break-word; /* 긴 단어도 줄바꿈 되도록 설정 */
-            line-height:2;
-        }
-        
-    </style>
-
+<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width">
+<meta charset="UTF-8">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome/all.min.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.css">
+<script src="{{ url_for('static', filename='js/kaiser.js') }}"></script>
+<script src="{{ url_for('static', filename='js/fontawesome.js') }}"></script>
+<title>concept</title>
 </head>
 <body>
-    {% if login_id %}
-    <form action="/concept" method="post">
-    <p><p>
-    <input name="load_synop" type="submit" value="Load Synop">
-    <input name="upload_synop" type="submit" value="Upload Synop">
+<div id="sidebar">
+    {% include 'sidebar.html' %}
+</div>
+<div id='center' class="dashboard_wp">
+    <div class="dashbox">
+        {% if login_id %}
+        <div class="dashbox_tit">concept art</div>
+        <ul>
+            <li><button class="btn_in2 openPopup" data-file="pop_up.html" data-target="typingContainer"><i class="fa-solid fa-magnifying-glass"></i> Load Synopsis</button></li>
+        </ul>
+        <div class="dashsnopbox" id="dashsnopbox">
+            <div id="typingContainer"></div>
+        </div>
+        <ul id="senbtnbox" class="senbtnbox">
+            <li><button class="btn_in2 openPopup4" data-file="pop_up4.html" data-target="typingContainerp"><i class="fa-solid fa-magnifying-glass"></i> Load Concept</button></li>
+            <li><a href=""><button class="btn_in2"><i class="fa-solid fa-pen-nib"></i> Writing Concept</button></a></li>
+        </ul>
+        <div class="dashconcept" id="dashconcept">
+            <div id="typingContainerp" class="contibox2"></div>
+        </div>
 
-    {% if synop_result %}
-    <h1>Synopsis</h1>
-    <div>
-        <p>
-        <pre class="synop">{{ synop_result }}</pre>
-        <input name="drawing_concept" type="submit" value="Concept">
-        <input name="load_concept" type="submit" value="Load Concept">
+        {% else %}
+            <div class="dashbox_tit">concept art</div>
+            <p><a href="/login">Login</a>
+            <p>
+        {% endif %}
     </div>
-
-    {% endif %}
-    <h1>Concept Art</h1>
-    {% if concept_img %}       
-    <img src="{{ concept_img }}" alt="Image" height="700" ></img>
-    {% endif %}
-    </form>
-    {% else %}
-        <h1>Concept Art</h1>
-        <p><a href="/login">Login</a>
-        <p>
-    {% endif %}
+<div id="popupContainer"></div>
+</div>
+<script type="module" src="{{ url_for('static', filename='js/synopsis.js') }}"></script>
+<script src="{{ url_for('static', filename='js/plotis.js') }}"></script>
+<script src="{{ url_for('static', filename='js/drop.js') }}"></script>
 </body>
 </html>

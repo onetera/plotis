@@ -1,72 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <a href="/">Back to Main</a>
-    <title>PPT</title>
-    <style>
-        .pre_text {
-            height: 500px;
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-            white-space: normal; /* 기본 줄바꿈 동작으로 설정 */
-            word-wrap: break-word; /* 긴 단어도 줄바꿈 되도록 설정 */
-            line-height:2;
-            overflow-y: scroll;
-            border: 1px solid #ccc;
-
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
+<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width">
+<meta charset="UTF-8">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome/all.min.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.css">
+<script src="{{ url_for('static', filename='js/kaiser.js') }}"></script>
+<script src="{{ url_for('static', filename='js/fontawesome.js') }}"></script>
+<title>ppt</title>
 </head>
 <body>
-    <h1>PPT 제작</h1>
-    {% if login_id %}
-    <p><p>
-    <form action="/ppt" method="post" enctype="multipart/form-data"> 
-        <input name="load_scenario" type="submit" value="Load Scenario"><p>
-        <input name="select_file" type="file" value="Select File">
-        <input name="upload_scenario" type="submit" value="Upload File"><p>
-        <input name="download_ppt" type="submit" value="Write & Download PPT"> 
-        <input name="load_ppt" type="submit" value="Load PPT"> 
-    </form>
-    {% if uploaded %}
-    <div>
-    <p>Uploaded the scenario
-    </div>
-    {% endif %}
-    {% if download_ppt_link %}
-    <div>
+<div id="sidebar">
+    {% include 'sidebar.html' %}
+</div>
+<div id='center' class="dashboard_wp">
+    <div class="dashbox">
+        {% if login_id %}
+        <div class="dashbox_tit">PPT</div>
         <ul>
-            <li><a href="{{ download_ppt_link }}" download>Download PPT</a>
+            <li><button class="btn_in2 openPopup" data-file="pop_up2.html" data-target="typingContainerz"><i class="fa-solid fa-magnifying-glass"></i> Load Scenario</button></li>
+            <li><button class="btn_in2 openPopupfile" data-file="pop_up_file.html" ><i class="fa-solid fa-upload"></i> Upload Scenario</button></li>
         </ul>
-    </div>
-    {% endif %}
+        <div class="dashscenpbox" id="dashscenpbox">
+            <div id="typingContainerz"></div>
+        </div>
+        <ul id="senbtnbox" class="senbtnbox">
+            <li><button class="btn_in2 openPopup8" data-file="pop_up8.html" data-target="typingContainerpt"><i class="fa-solid fa-magnifying-glass"></i> Load PPT</button></li>
+            <li><a href=""><button class="btn_in2"><i class="fa-solid fa-pen-nib"></i> Write & Download PPT</button></a></li>
+        </ul>
+        <div class="dashpptbox" id="dashpptbox">
+            <div id="typingContainerpt"></div>
+        </div>
 
-    {% if scenario_result %}
-    <p><p>
-    <div>
-        <p>
-        <pre class="pre_text">{{ scenario_result | safe }}</pre>
+        {% else %}
+            <div class="dashbox_tit">PPT</div>
+            <p><a href="/login">Login</a>
+            <p>
+        {% endif %}
+        
     </div>
-    {% endif %}
-    {% else %}
-        <p><a href="/login">Login</a>
-        <p>
-    {% endif %}
+<div id="popupContainer"></div>
+</div>
+<script type="module" src="{{ url_for('static', filename='js/scenario.js') }}"></script>
+<script src="{{ url_for('static', filename='js/plotis.js') }}"></script>
+<script src="{{ url_for('static', filename='js/drop.js') }}"></script>
 </body>
 </html>

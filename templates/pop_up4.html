@@ -1,0 +1,35 @@
+<div id="popupOverlay" class="popup-overlay">
+    <div class="popup" id="popupContainer">
+      <button class="close-btn" id="closePopup">X</button>
+      <form>
+          <!-- 라디오 버튼 그룹 -->
+          <fieldset>
+              <!-- 10개의 라디오 버튼 -->
+              <ul>
+                  {% for data in popup_data %}
+                  <li>
+                      <label for="Concept{{ data[0] }}">
+                          <input type="radio" id="Concept{{ data[0] }}" name="contentOptionp" value="{{ data[0] }}"> Concept {{ loop.index }}
+                      </label>
+                  </li>
+                  {% endfor %}
+              </ul>
+          </fieldset>
+      </form>
+      <button id="startTyping" class="btn_in2"><i class="fa-solid fa-magnifying-glass"></i> Load Concept</button>
+  </div>
+</div>
+
+{% for data in popup_data %}
+<div>
+    <div id="hiddenContentp{{ data[0] }}" style="display: none;">
+        <table border="1" cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td><img src="{{ url_for('use_tmp_file', filename=data[1][6:] ) }}" alt=""/></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endfor %}

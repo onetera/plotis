@@ -1,63 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <a href="/">Back to Main</a>
-    <title>Scheduling</title>
-    <style>
-        .pre_text {
-            height: 500px;
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-            white-space: normal; /* 기본 줄바꿈 동작으로 설정 */
-            word-wrap: break-word; /* 긴 단어도 줄바꿈 되도록 설정 */
-            line-height:2;
-            overflow-y: scroll;
-            border: 1px solid #ccc;
-        }
-        .schedule_text {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-            white-space: normal; /* 기본 줄바꿈 동작으로 설정 */
-            word-wrap: break-word; /* 긴 단어도 줄바꿈 되도록 설정 */
-            line-height:2;
-            overflow: visible;
-            border: 1px solid #ccc;
-        }
-    </style>
+<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width">
+<meta charset="UTF-8">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome/all.min.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.css">
+<script src="{{ url_for('static', filename='js/kaiser.js') }}"></script>
+<script src="{{ url_for('static', filename='js/fontawesome.js') }}"></script>
+<title>schedule</title>
 </head>
 <body>
-    {% if  login_id %}
-    <p><p>
-    <form action="/schedule" method="post"> 
-        <input name="load_scenario" type="submit" value="Load Scenario">
-        <input name="schedule" type="submit" value="Make Schedule">
-        <input name="load_schedule" type="submit" value="Load Schedule">
-    </form>
-    <p><p>
-    {% if scenario_result %}
-    <h1>Scenario</h1>
-    <div>
-        <p>
-        <pre class="pre_text">{{ scenario_result | safe }}</pre>
+<div id="sidebar">
+    {% include 'sidebar.html' %}
+</div>
+<div id='center' class="dashboard_wp">
+<div class="contents_box">
+    <div class="dashbox">
+        {% if  login_id %}
+        <div class="dashbox_tit">scheduling</div>
+        <ul>
+            <li><button class="btn_in2 openPopup" data-file="pop_up2.html" data-target="typingContainerz"><i class="fa-solid fa-magnifying-glass"></i> Load Scenario</button></li>
+            <li><button class="btn_in2 openPopupfile" data-file="pop_up_file.html" ><i class="fa-solid fa-upload"></i> Upload Scenario</button></li>
+        </ul>
+        <div class="dashscenpbox" id="dashscenpbox">
+            <div id="typingContainerz"></div>
+        </div>
+        <ul id="senbtnbox" class="senbtnbox">
+            <li><button class="btn_in2 openPopup6" data-file="pop_up6.html" data-target="typingContainerdu"><i class="fa-solid fa-magnifying-glass"></i> Load Schedule</button></li>
+            <li><a href=""><button class="btn_in2"><i class="fa-solid fa-pen-nib"></i> Make Schedule</button></a></li>
+        </ul>
+        <div class="dashscdbox" id="dashscdbox">
+            <div id="typingContainerdu"></div>
+        </div>
+
+        {% else %}
+            <h1>Scheduling</h1>
+            <p><a href="/login">Login</a>
+            <p>
+        {% endif %}
     </div>
-    {% endif %}
-    <p><p>
-    {% if schedule_result %}
-    <h1>Scheduling</h1>
-    <div>
-        <p>
-        <pre class="schedule_text">{{ schedule_result | safe }}</pre>
-    </div>
-    {% endif %}
-    {% else %}
-        <h1>Scheduling</h1>
-        <p><a href="/login">Login</a>
-        <p>
-    {% endif %}
+<div id="popupContainer"></div>
+</div>
+<script type="module" src="{{ url_for('static', filename='js/scenario.js') }}"></script>
+<script src="{{ url_for('static', filename='js/plotis.js') }}"></script>
+<script src="{{ url_for('static', filename='js/schedule.js') }}"></script>
+<script src="{{ url_for('static', filename='js/drop.js') }}"></script>
 </body>
 </html>

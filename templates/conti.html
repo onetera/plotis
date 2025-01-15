@@ -1,87 +1,133 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <a href="/">Back to Main</a>
-    <title>Conti</title>
-    <style>
-        .pre_text {
-            height: 500px;
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-            white-space: normal; /* 기본 줄바꿈 동작으로 설정 */
-            word-wrap: break-word; /* 긴 단어도 줄바꿈 되도록 설정 */
-            line-height:2;
-            overflow-y: scroll;
-            border: 1px solid #ccc;
-
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
+<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width">
+<meta charset="UTF-8">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome/all.min.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.css">
+<script src="{{ url_for('static', filename='js/kaiser.js') }}"></script>
+<script src="{{ url_for('static', filename='js/fontawesome.js') }}"></script>
+<title>conti</title>
 </head>
 <body>
-    {% if login_id %}
-    <p><p>
-    <form action="/conti" method="post" enctype="multipart/form-data"> 
-        <input name="load_scenario" type="submit" value="Load Scenario">
-        <input name="select_file" type="file" value="Select File">
-        <input name="upload_scenario" type="submit" value="Upload File"><p>
-        <input name="load_conti" type="submit" value="Load Conti">
-        <input name="conti" type="submit" value="Drawing Conti">
-        <input name="save_conti" type="submit" value="Save Conti">
-    </form>
-    <p><p>
-    {% if scenario_result %}
-    <div>
-        <p>
-        <pre class="pre_text">{{ scenario_result | safe }}</pre>
+<div id="sidebar">
+    {% include 'sidebar.html' %}
+</div>
+<div id='center' class="dashboard_wp">
+    <div class="dashbox">
+        {% if login_id %}
+        <div class="dashbox_tit">conti</div>
+        <ul>
+            <li><button class="btn_in2 openPopup" data-file="pop_up2.html" data-target="typingContainerz"><i class="fa-solid fa-magnifying-glass"></i> Load Scenario</button></li>
+            <li><button class="btn_in2 openPopupfile" data-file="pop_up_file.html" ><i class="fa-solid fa-upload"></i> Upload Scenario</button></li>
+        </ul>
+        <div class="dashscenpbox" id="dashscenpbox">
+            <div id="typingContainerz"></div>
+        </div>
+        <ul id="senbtnbox" class="senbtnbox">
+            <li><button class="btn_in2 openPopup3" data-file="pop_up3.html" data-target="typingContainerc"><i class="fa-solid fa-magnifying-glass"></i> Load Conti</button></li>
+            <li><a href=""><button class="btn_in2"><i class="fa-solid fa-pen-nib"></i> Drawing Conti</button></a></li>
+            <li><button id="excelButton" class="btn_in2"><i class="fa-solid fa-download"></i> Save Conti</button></li>
+        </ul>
+        <div class="dashconti" id="dashconti">
+            <div id="typingContainerc" class="contibox"></div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/exceljs@4.3.0/dist/exceljs.min.js"></script>
+        <script>
+        document.getElementById("excelButton").addEventListener("click", async function () {
+          const rows = document.querySelectorAll("#typingContainerc table tbody tr");
+
+          if (rows.length === 0) {
+              alert("로딩된 콘텐츠가 없습니다.");
+              return;
+          }
+
+          const ExcelJS = window.ExcelJS;
+          const workbook = new ExcelJS.Workbook();
+          const worksheet = workbook.addWorksheet("Images");
+
+          worksheet.columns = [
+              { header: "Image", key: "Image", width: 30 }
+          ];
+
+          let hasData = false;
+
+          for (const row of rows) {
+              const contiCell = row.querySelector('td[data-label="Conti"] img');
+
+              if (contiCell) {
+                  const contiImgSrc = contiCell.src;
+
+                  // 새 행 추가 (이미지를 위한 자리 생성)
+                  const newRow = worksheet.addRow({ Image: "이미지 포함" });
+
+                  // 이미지 다운로드 및 크기 계산
+                  const image = await fetch(contiImgSrc).then(res => res.blob());
+                  const imageBuffer = await image.arrayBuffer();
+
+                  const imageId = workbook.addImage({
+                      buffer: imageBuffer,
+                      extension: "png" // 이미지 확장자
+                  });
+
+                  // 이미지 크기 계산
+                  const img = new Image();
+                  img.src = contiImgSrc;
+
+                  await new Promise((resolve) => {
+                      img.onload = () => {
+                          const imgWidth = img.width;
+                          const imgHeight = img.height;
+
+                          // 행 높이를 이미지 비율에 맞게 설정
+                          worksheet.getRow(newRow.number).height = imgHeight * 0.75;
+
+                          // 이미지 삽입
+                          worksheet.addImage(imageId, {
+                              tl: { col: 0, row: newRow.number - 1 },  // 이미지 위치
+                              ext: { width: imgWidth, height: imgHeight }
+                          });
+
+                          hasData = true;
+                          resolve();
+                      };
+                  });
+              }
+          }
+
+          if (hasData) {
+              const buffer = await workbook.xlsx.writeBuffer();
+              const blob = new Blob([buffer], { type: "application/octet-stream" });
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = "conti.xlsx";
+              a.click();
+              window.URL.revokeObjectURL(url);
+          } else {
+              alert("다운로드할 데이터가 없습니다.");
+          }
+      });
+
+      </script>
+
+        {% else %}
+            <div class="dashbox_tit">conti</div>
+            <p><a href="/login">Login</a>
+            <p>
+        {% endif %}
     </div>
-    {% endif %}
-    {% if uploaded %}
-    <div>
-    <p>Uploaded the scenario
-    </div>
-    {% endif %}
-    {% if conti_result %}
-    <table>
-        <thead>
-            <tr>
-                <th>Scenario</th>
-                <th>Conti</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in conti_result %}
-            <tr>
-                <td>{{ row[0] | safe }}</td>
-                <td>
-                    {% if row[1] %}
-                    <img src="{{ row[1] }}" alt="Image" height="375">
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% endif %}
-    {% else %}
-        <h1> Conti</h1>
-        <p><a href="/login">Login</a>
-        <p>
-    {% endif %}
+<div id="popupContainer"></div>
+</div>
+<script type="module" src="{{ url_for('static', filename='js/scenario.js') }}"></script>
+<script src="{{ url_for('static', filename='js/plotis.js') }}"></script>
+<script src="{{ url_for('static', filename='js/drop.js') }}"></script>
 </body>
 </html>

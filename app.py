@@ -1,6 +1,6 @@
 # :coding: utf-8
 
-from flask import Flask, render_template, request, redirect, session, send_file, url_for
+from flask import Flask, render_template, request, redirect, session, send_file, url_for, send_from_directory, jsonify
 from flask_session import Session
 import markdown
 import base64
@@ -31,7 +31,50 @@ def main_page():
     login_id = session.get('login_id', '')
     print( '\n' )
     print( 'login_id : ' , login_id )
-    return render_template( 'main.html', login_id = login_id )
+    return render_template( 'index.html', login_id = login_id )
+    # return render_template( 'main.html', login_id = login_id )
+
+@app.route( '/dashboard' )
+def dashboard_page():
+    login_id = session.get('login_id', '')
+    print( '\n' )
+    print( 'login_id : ' , login_id )
+    return render_template( 'dashboard.html', login_id = login_id )
+
+@app.route( '/aboutus' )
+def aboutus_page():
+    login_id = session.get('login_id', '')
+    print( '\n' )
+    print( 'login_id : ' , login_id )
+    return render_template( 'aboutus.html', login_id = login_id )
+
+@app.route( '/features' )
+def features_page():
+    login_id = session.get('login_id', '')
+    print( '\n' )
+    print( 'login_id : ' , login_id )
+    return render_template( 'features.html', login_id = login_id )
+
+@app.route( '/contact' )
+def contact_page():
+    login_id = session.get('login_id', '')
+    print( '\n' )
+    print( 'login_id : ' , login_id )
+    return render_template( 'contact.html', login_id = login_id )
+
+@app.route( '/previz' )
+def previz():
+    login_id = session.get('login_id', '')
+    print( '\n' )
+    print( 'login_id : ' , login_id )
+    return render_template( 'previz.html', login_id = login_id )
+
+@app.route( '/loading' )
+def loading():
+    login_id = session.get('login_id', '')
+    print( '\n' )
+    print( 'login_id : ' , login_id )
+    return render_template( 'loading.html', login_id = login_id )
 
 @app.route( '/login', methods=[ 'GET', 'POST' ] )
 def login():
@@ -47,6 +90,109 @@ def login():
 def logout():
     session.pop( 'login_id' , None )
     return redirect( url_for( 'main_page') )
+
+@app.route( '/<filename>', methods=[ 'GET', 'POST' ] )
+def pop_up(filename):
+    logging.info(f"Requested popup file : {filename}")
+    previous_page = request.referrer
+    logging.info(f"Previous page : {previous_page}")
+
+    if 'pop_up.html' in filename:
+        popup_data = db.last_5_synop()
+        return render_template( filename, popup_data=popup_data )
+    
+    elif 'pop_up2.html' in filename:
+        if '/scenario' in previous_page:
+            synop_idx = session.get('synop_idx', None)
+            if synop_idx:
+                popup_data = db.load_scenario(synop_idx)
+                return render_template( filename , popup_data=popup_data )
+        else:
+            popup_data = db.last_5_scenario()
+            return render_template( filename , popup_data=popup_data )
+
+    elif 'pop_up3.html' in filename:
+        scen_idx = session.get('scen_idx', None)
+        if scen_idx:
+            popup_data = []
+            div_data = []
+            count = 1
+
+            find_div_scenarios = db.load_div_scene(scen_idx)
+            for f in find_div_scenarios:
+                if f[1] == 1:
+                    if div_data:
+                        popup_data.append([count, div_data])
+                        count += 1
+                        div_data.clear()
+                content = f[2]
+                img_path = db.load_conti(f[0])
+                div_data.append([content, img_path])
+            
+            popup_data.append([count, div_data])
+
+        return render_template( filename, popup_data=popup_data )
+
+    elif 'pop_up4.html' in filename:
+        synop_idx = session.get('synop_idx', None)
+        synop_content = db.search_synop_using_idx(synop_idx)
+        if synop_idx:
+            popup_data = db.load_concept(synop_content)
+        return render_template( filename, popup_data=popup_data )
+    
+    elif 'pop_up5.html' in filename:
+        scen_idx = session.get('scen_idx', None)
+        if scen_idx:
+            popup_data = db.load_character(scen_idx)
+        return render_template( filename, popup_data=popup_data )
+
+    elif 'pop_up6.html' in filename:
+        scen_idx = session.get('scen_idx', None)
+        if scen_idx:
+            popup_data = db.load_schedule(scen_idx)
+            print(popup_data)
+            print()
+            print(popup_data[0])
+        return render_template( filename, popup_data=popup_data )
+
+    elif 'pop_up7.html' in filename:
+        scen_idx = session.get('scen_idx', None)
+        if scen_idx:
+            popup_data = db.load_budget(scen_idx)
+        return render_template( filename, popup_data=popup_data )
+        
+    elif 'pop_up8.html' in filename:
+        scen_idx = session.get('scen_idx', None)
+        if scen_idx:
+            popup_data = db.load_ppt(scen_idx)
+        return render_template( filename, popup_data=popup_data )
+    
+    else:
+        return render_template( filename )
+
+@app.route('/load_synop_ajax', methods=['POST'])
+def load_synop_ajax():
+    session['synop_idx'] = None
+    data = request.get_json()
+    synop_idx = data.get('synop_idx', None)
+    if not synop_idx:
+        return jsonify({"success": False})
+
+    session['synop_idx'] = synop_idx
+
+    return jsonify({"success": True})
+
+@app.route('/load_scen_ajax', methods=['POST'])
+def load_scen_ajax():
+    data = request.get_json()
+    scen_idx = data.get('scen_idx', None)   # 시나리오 식별자
+    if not scen_idx:
+        return jsonify({"success": False})
+
+    session['scen_idx'] = scen_idx
+
+    return jsonify({"success": True})
+    # return jsonify({"success": True, "scenario_data": scenario_data})
 
 @app.route( '/check_login' , methods=[ 'GET', 'POST' ] )
 def check_login( ):
@@ -374,6 +520,16 @@ def download_ppt_file():
     ppt_path = request.args.get('ppt_path')
     if ppt_path and os.path.exists(ppt_path):
         return send_file(ppt_path, as_attachment=True)
+
+@app.route('/tmp/<path:filename>')
+def use_tmp_file(filename):
+    previous_page = request.referrer
+    if '/ppt' in previous_page:
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+    else:
+        # return send_from_directory('tmp', filename)
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 
 @app.route( '/budget', methods = ['GET', 'POST'] )
 def budget():

@@ -1,72 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <a href="/">Back to Main</a>
-    <title>Budgeting</title>
-    <style>
-        .pre_text {
-            height: 500px;
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-            white-space: normal; /* 기본 줄바꿈 동작으로 설정 */
-            word-wrap: break-word; /* 긴 단어도 줄바꿈 되도록 설정 */
-            line-height:2;
-            overflow-y: scroll;
-            border: 1px solid #ccc;
-        }
-        .table_text {
-            white-space: pre-wrap;
-            font-family: monospace;
-            background-color: #f9f9f9;
-            padding: 10px;
-            border: 1px solid #ccc;
-            line-height: 2;
-            overflow: visible;
-            word-wrap: break-word;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10px;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: center;
-        }
-    </style>
+<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width">
+<meta charset="UTF-8">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome/all.min.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.css">
+<script src="{{ url_for('static', filename='js/kaiser.js') }}"></script>
+<script src="{{ url_for('static', filename='js/fontawesome.js') }}"></script>
+<title>budgeting</title>
 </head>
 <body>
-    {% if login_id %}
-    <p><p>
-    <form action="/budget" method="post"> 
-        <input name="load_scenario" type="submit" value="Load Scenario">
-        <input name="budget" type="submit" value="Set Budget">
-        <input name="load_budget" type="submit" value="Load Budget">
-    </form>
-    <p><p>
-    {% if scenario_result %}
-    <h1>Scenario</h1>
-    <div>
-        <p>
-        <pre class="pre_text">{{ scenario_result | safe }}</pre>
+<div id="sidebar">
+    {% include 'sidebar.html' %}
+</div>
+<div id='center' class="dashboard_wp">
+    <div class="dashbox">
+        {% if login_id %}
+        <div class="dashbox_tit">budgeting</div>
+        <ul>
+            <li><button class="btn_in2 openPopup" data-file="pop_up2.html" data-target="typingContainerz"><i class="fa-solid fa-magnifying-glass"></i> Load Scenario</button></li>
+            <li><button class="btn_in2 openPopupfile" data-file="pop_up_file.html" ><i class="fa-solid fa-upload"></i> Upload Scenario</button></li>
+        </ul>
+        <div class="dashscenpbox" id="dashscenpbox">
+            <div id="typingContainerz"></div>
+        </div>
+        <ul id="senbtnbox" class="senbtnbox">
+            <li><button class="btn_in2 openPopup7" data-file="pop_up7.html" data-target="typingContainerb"><i class="fa-solid fa-magnifying-glass"></i> Load Budget</button></li>
+            <li><a href=""><button class="btn_in2"><i class="fa-solid fa-pen-nib"></i> Make Budget</button></a></li>
+        </ul>
+        <div class="dashbdgbox" id="dashbdgbox">
+            <div id="typingContainerb"></div>
+        </div>
+
+        {% else %}
+            <div class="dashbox_tit">budgeting</div>
+            <p><a href="/login">Login</a>
+            <p>
+        {% endif %}
     </div>
-    {% endif %}
-    <p><p>
-    {% if budget_result %}
-    <h1>Budgeting</h1>
-    <div>
-        <p>
-        <pre class="table_text">{{ budget_result | safe }}</pre>
-    </div>
-    {% endif %}
-    {% else %}
-        <h1>Budgeting</h1>
-        <p><a href="/login">Login</a>
-        <p>
-    {% endif %}
+<div id="popupContainer"></div>
+</div>
+<script type="module" src="{{ url_for('static', filename='js/scenario.js') }}"></script>
+<script src="{{ url_for('static', filename='js/plotis.js') }}"></script>
+<script src="{{ url_for('static', filename='js/drop.js') }}"></script>
 </body>
 </html>

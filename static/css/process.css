@@ -1,0 +1,247 @@
+#contents {
+    height: 90vh;
+    overflow: hidden;
+}
+.pop-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* 배경을 어두운 투명하게 설정 */
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* 팝업이 다른 내용 위에 표시되도록 */
+  opacity: 0; /* 초기에는 보이지 않도록 */
+}
+
+/* 팝업 안에 동영상 */
+.pop-content {
+  background-color: transparent; /* 배경을 투명하게 설정 */
+  width: 100%;
+  max-width: 1200px;
+  border: 1px solid #383c3d;
+  padding: 20px;
+  margin:20px;
+  position: relative;
+  /* transition: opacity 1s ease; /* 서서히 나타나도록 */ */
+}
+
+/* 팝업 닫기 버튼 */
+.close-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 1.5rem;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: #2c2c2c;
+}
+
+.loading-container {
+  display:inline ;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%; /* 부모 요소의 너비 100% */
+  height: 100%; /* 부모 요소의 높이 100% */
+}
+.loading {
+  position: relative;
+  min-height:80vh;
+  top:40%;
+}
+
+.loaded {
+    text-align: center;
+    display: flex;
+    font-size: 2rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    font-weight: 600;
+}
+/* ALIENS 텍스트 애니메이션 스타일 */
+.aliens {
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  width:300px;
+  margin:20px auto;
+  text-align: center;
+}
+
+.aliens div {
+  animation: animateLetters 1s infinite alternate;
+}
+
+.aliens div:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.aliens div:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.aliens div:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.aliens div:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+.aliens div:nth-child(5) {
+  animation-delay: 0.8s;
+}
+
+.aliens div:nth-child(6) {
+  animation-delay: 1s;
+}
+
+.aliens div:nth-child(7) {
+  animation-delay: 1.2s;
+}
+
+/* 애니메이션 효과 */
+@keyframes animateLetters {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* 로딩 진행 바 스타일 */
+.process-container {
+  width: 300px;
+  height: 15px;
+  background-color: #333;
+  border-radius: 10px;
+  margin-top: 20px;
+  position: relative;
+  margin:0 auto;
+}
+
+/* 프로세스 바 */
+.process-bar {
+  height: 100%;
+  width: 0; /* 초기 너비 0으로 설정 */
+  background-color: rgba(0, 255, 255, 0.5); /* 시작 색상 */
+  border-radius: 10px;
+  transition: width 0.1s ease-in-out;
+}
+
+/* 프로세스 바 위에 숫자 표시 */
+.loading-text {
+  font-size: 1rem;
+  color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.span-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.span-container span {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 0 5px;
+  border-radius: 50%;
+  background-color: #0f0;
+  animation: bouncing 0.6s infinite alternate;
+}
+
+.span-container span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.span-container span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.span-container span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.span-container span:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+.span-container span:nth-child(5) {
+  animation-delay: 0.8s;
+}
+
+.span-container span:nth-child(6) {
+  animation-delay: 1s;
+}
+
+.span-container span:nth-child(7) {
+  animation-delay: 1.2s;
+}
+
+@keyframes bouncing {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-10px);
+  }
+}
+
+/* 로딩 완료 후 스타일 */
+.loaded {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loaded h1 {
+  font-size: 3rem;
+  color: #222;
+  margin-top: 20px;
+}
+
+/* 비디오 스타일 */
+video {
+  width: 100%;
+  height: auto;
+  max-height: 90vh;
+}
+
+
+.align {
+  display: grid;
+  place-items: center;
+  height:70vh;
+  overflow: hidden;
+  margin:0;
+  padding:0;
+}
+
+.grid {
+  inline-size: 90%;
+  margin-inline: auto;
+  max-inline-size: 20rem;
+}
+
+.icons {
+  display: none;
+}

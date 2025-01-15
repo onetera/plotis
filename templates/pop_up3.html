@@ -1,0 +1,47 @@
+<div id="popupOverlay" class="popup-overlay">
+    <div class="popup" id="popupContainer">
+      <button class="close-btn" id="closePopup">X</button>
+      <form>
+          <!-- 라디오 버튼 그룹 -->
+          <fieldset>
+              <ul>
+                  {% for data in popup_data %}
+                  <li>
+                      <label for="Conti{{ data[0] }}">
+                          <input type="radio" id="Conti{{ data[0] }}" name="contentOptionc" value="{{ data[0] }}"> Conti {{ data[0] }}
+                      </label>
+                  </li>
+                  {% endfor %}
+              </ul>
+          </fieldset>
+      </form>
+      <button id="startTyping" class="btn_in2"><i class="fa-solid fa-magnifying-glass"></i> Load Conti</button>
+  </div>
+</div>
+
+{% for data in popup_data %}
+<div>
+    <div id="hiddenContentc{{ data[0] }}" style="display: none;">
+        <table border="1" cellpadding="10" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Scene</th>
+                    <th>Conti</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in data[1] %}
+                <tr>
+                    <td data-label="Scene">
+                        <p>
+                            {{ d[0] }}
+                        </p>
+                    </td>
+                    <td data-label="Conti"><img src="{{ url_for('use_tmp_file', filename=d[1][6:] ) }}" alt=""/></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endfor %}

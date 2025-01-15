@@ -1,0 +1,28 @@
+<div id="popupOverlay" class="popup-overlay">
+    <div class="popup" id="popupContainer">
+        <button class="close-btn" id="closePopup">X</button>
+    <form>
+        <div class="file_cus">
+            <label>
+                <input type="file">
+                <span class="file_name">Select your file!</span>
+            </label>
+        </div>
+    </form>
+    <a href=""><button class="btn_in2"><i class="fa-solid fa-upload"></i> Upload Scenario</button></a>
+    </div>
+</div>
+<script>
+
+  $(window).on('load', function() {
+      fileCus();
+  })
+
+    function fileCus() {
+        $(".file_cus input[type=file]").on("change", function() {
+            const fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".file_name").text(fileName || "Select your file!");
+        });
+    }
+
+</script>
