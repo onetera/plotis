@@ -8,7 +8,7 @@
                   {% for data in popup_data %}
                   <li>
                       <label for="Schedule{{ data[0] }}">
-                          <input type="radio" id="Schedule{{ data[0] }}" name="contentOptiondu" value="{{ data[0] }}" data-schedule="{{ data[1]|tojson|safe }}"> Schedule {{ loop.index }}
+                          <input type="radio" id="Schedule{{ data[0] }}" name="contentOptiondu" value="{{ data[0] }}" data-schedule='{{ data[1]|tojson }}'> Schedule {{ loop.index }}
                       </label>
                   </li>
                   {% endfor %}
@@ -19,10 +19,3 @@
   </div>
 </div>
 
-{% for data in popup_data %}
-<div id="hiddenContentdu{{ data[0] }}" style="display: none;">
-    <div class="progress_box">
-        <div id="schedule" class="schedule-container"></div>
-    </div>
-</div>
-{% endfor %}

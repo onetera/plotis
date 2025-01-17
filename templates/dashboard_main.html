@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<head>
+<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width">
+<meta charset="UTF-8">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome/all.min.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.css">
+<script src="{{ url_for('static', filename='js/kaiser.js') }}"></script>
+<script src="{{ url_for('static', filename='js/fontawesome.js') }}"></script>
+<title>dashboard</title>
+</head>
+<body>
+<div id="sidebar2">
+  {% include 'sidebar2.html' %}
+</div>
+<div class="main_body">
+  <div class="main_box">
+    <div class="main_con1">
+        <h2 class="cre_tit">PLOTIS</h2>
+        <p class="description">AIl You Need is the Idea.<br/> We’ll Do the Rest</p>
+    </div>
+    <div class="main_con2 a-container">
+        <h2 class="cre_tit">Create Projuct</h2>
+        <p class="description">나만의 이야기를 만들어보세요!</p>
+        <a href="/dashboard"><button class="form__button button submit" type="button">Create</button></a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

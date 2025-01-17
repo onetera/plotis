@@ -1,3 +1,4 @@
+
 const popupContainer = document.getElementById('popupContainer');
 const openPopupButton = document.getElementById('openPopup');
 const hiddenContent = document.getElementById('hiddenContent');
@@ -176,45 +177,8 @@ function initializePopup(targetContainerId) {
                         dashbdgbox.style.display = 'block';
                         dashscenpbox.style.display = 'none';
 
-                        function calculateBudgetTotal(budgetTableId) {
-                        const budgetTable = document.getElementById(budgetTableId);
-                        const inputs = budgetTable.querySelectorAll('.prdPrice');
-
-
-
-                        let total = 0;
-
-                        inputs.forEach(input => {
-                            const value = parseInt(input.value.replace(/,/g, ''));  // 숫자로 변환
-                            if (!isNaN(value)) {
-                                total += value;
-                            }
-                        });
-
-                        // 결과 출력
-                        const totalDisplay = budgetTable.querySelector(`.totalDisplay[data-budget="${budgetTableId}"]`);
-                        if (totalDisplay) {
-                            totalDisplay.textContent = total.toLocaleString('en-US');
-                        }
                     }
 
-                    // 동적으로 테이블마다 계산 실행
-                    function calculateAllBudgets() {
-                        const budgetTables = document.querySelectorAll('.budgetTable');
-                        budgetTables.forEach(table => {
-                            calculateBudgetTotal(table.id);
-                        });
-                    }
-
-                    calculateAllBudgets();
-
-                    }
-
-                    // 특수 조건 처리
-                    if (containerId === 'typingContainerc' && dashscenpbox) {
-                        dashscenpbox.style.display = 'none';
-                    }
-                    break;
                 }
             }
 
@@ -283,104 +247,6 @@ function removeActiveState() {
 const activePopup = document.querySelector(".openPopupfile.active");
 if (activePopup) activePopup.classList.remove("active");
 }
-
-// 마크다운 변환기 초기화
-const md = window.markdownit();
-
-// 특정 컨테이너에서 마크다운 렌더링
-function renderMarkdownInContainer(container) {
-if (container) {
-  const textareas = container.querySelectorAll('textarea[id^="markdown-input"]');
-  textareas.forEach(textarea => {
-      const outputId = textarea.id.replace("markdown-input", "html-output");
-      const outputDiv = document.getElementById(outputId);
-      if (outputDiv) {
-          outputDiv.innerHTML = md.render(textarea.value);
-      }
-  });
-}
-}
-
-// ——————————————————————————————————————————————————
-// comming soon start
-// ——————————————————————————————————————————————————
-
-class TextScramble {
-constructor(el) {
-this.el = el
-this.chars = 'PLOTIS'
-this.update = this.update.bind(this)
-}
-setText(newText) {
-const oldText = this.el.innerText
-const length = Math.max(oldText.length, newText.length)
-const promise = new Promise((resolve) => this.resolve = resolve)
-this.queue = []
-for (let i = 0; i < length; i++) {
-const from = oldText[i] || ''
-const to = newText[i] || ''
-const start = Math.floor(Math.random() * 40)
-const end = start + Math.floor(Math.random() * 40)
-this.queue.push({ from, to, start, end })
-}
-cancelAnimationFrame(this.frameRequest)
-this.frame = 0
-this.update()
-return promise
-}
-update() {
-let output = ''
-let complete = 0
-for (let i = 0, n = this.queue.length; i < n; i++) {
-let { from, to, start, end, char } = this.queue[i]
-if (this.frame >= end) {
-  complete++
-  output += to
-} else if (this.frame >= start) {
-  if (!char || Math.random() < 0.5) {
-    char = this.randomChar()
-    this.queue[i].char = char
-  }
-  output += `<span class="dud">${char}</span>`
-} else {
-  output += from
-}
-}
-this.el.innerHTML = output
-if (complete === this.queue.length) {
-this.resolve()
-} else {
-this.frameRequest = requestAnimationFrame(this.update)
-this.frame++
-}
-}
-randomChar() {
-return this.chars[Math.floor(Math.random() * this.chars.length)]
-}
-}
-
-const phrases = [
-'comming soon!',
-'The story of PLOTIS will be back soon'
-]
-
-const el = document.querySelector('.comming')
-const fx = new TextScramble(el)
-
-let counter = 0
-const next = () => {
-fx.setText(phrases[counter]).then(() => {
-setTimeout(next, 2000)
-})
-counter = (counter + 1) % phrases.length
-}
-
-next()
-
-// ——————————————————————————————————————————————————
-// comming soon end
-// ——————————————————————————————————————————————————
-
 
 function setViewportHeight() {
 document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);

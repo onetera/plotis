@@ -1,0 +1,38 @@
+<div class="ds_header">
+  <div class="ds_logo">
+      <a href="/dashboard">
+      <ul class="logo_ci">
+          <li class="logo_ci_wh"><img src="{{ url_for('static', filename='img/logo_ci.svg') }}"></li>
+          <li class="logo_txt"><img src="{{ url_for('static', filename='img/logo_txt.svg') }}"></li>
+      </ul>
+      </a>
+  </div>
+  <div class="ds_home">
+      <ul class="ds_homeli">
+          <li>
+              <label for="layer-toggle">
+              <i class="fa-regular fa-user" style="cursor: pointer;"></i>
+              </label>
+          </li>
+          <li><a href="/" target="_blank"><i class="fa-solid fa-house" title="homepage"></i></a></li>
+      </ul>
+    <input type="checkbox" id="layer-toggle" hidden>
+    <div class="ds_overlay">
+      <label for="layer-toggle" class="background"></label> <!-- 레이어 외부 클릭 닫기 -->
+      <div class="layer-popup">
+        <label for="layer-toggle" class="close-link"><i class="fa-solid fa-xmark"></i></label> <!-- 닫기 버튼 -->
+        {% if login_id %}
+          <p><a href="/modify">west 님</a></p>
+          <ul>
+            <li><a href="/logout"><button class="btn_in2">Logout</button></a></li>
+          </ul>
+        {% else %}
+          <p>guest</p>
+          <ul>
+            <li><a href="/login"><button class="btn_in2">Login</button></a></li>
+          </ul>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
