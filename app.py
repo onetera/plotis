@@ -18,6 +18,7 @@ logging.basicConfig(level=logging.DEBUG)
 import db_conn
 
 from ctrl_scene import read_scene
+import data_parse
 
 app = Flask( __name__ )
 
@@ -76,6 +77,20 @@ def loading():
     print( 'login_id : ' , login_id )
     return render_template( 'loading.html', login_id = login_id )
 
+@app.route( '/dashboard/main' )
+def dashboard_main_page():
+    login_id = session.get('login_id', '')
+    print( '\n' )
+    print( 'login_id : ' , login_id )
+    return render_template( 'dashboard_main.html', login_id = login_id )
+
+@app.route( '/modify' )
+def modify_page():
+    login_id = session.get('login_id', '')
+    print( '\n' )
+    print( 'login_id : ' , login_id )
+    return render_template( 'modify.html', login_id = login_id )
+
 @app.route( '/login', methods=[ 'GET', 'POST' ] )
 def login():
     login_id = request.form.get( 'login_id', '' )
@@ -128,9 +143,7 @@ def pop_up(filename):
                 content = f[2]
                 img_path = db.load_conti(f[0])
                 div_data.append([content, img_path])
-            
             popup_data.append([count, div_data])
-
         return render_template( filename, popup_data=popup_data )
 
     elif 'pop_up4.html' in filename:
@@ -149,16 +162,21 @@ def pop_up(filename):
     elif 'pop_up6.html' in filename:
         scen_idx = session.get('scen_idx', None)
         if scen_idx:
-            popup_data = db.load_schedule(scen_idx)
-            print(popup_data)
-            print()
-            print(popup_data[0])
+            popup_data = []
+            load_schedule = db.load_schedule(scen_idx)
+            for s in load_schedule:
+                parse_schedule = data_parse.parse_schedule(s[1])
+                popup_data.append([s[0], parse_schedule])
         return render_template( filename, popup_data=popup_data )
 
     elif 'pop_up7.html' in filename:
         scen_idx = session.get('scen_idx', None)
         if scen_idx:
-            popup_data = db.load_budget(scen_idx)
+            popup_data = []
+            load_budget = db.load_budget(scen_idx)
+            for b in load_budget:
+                parse_budget = data_parse.parse_budget(b[1])
+                popup_data.append([b[0], parse_budget])
         return render_template( filename, popup_data=popup_data )
         
     elif 'pop_up8.html' in filename:

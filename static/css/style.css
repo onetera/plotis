@@ -333,6 +333,9 @@ h2.slide-desc.desc_set {
   padding:20px;
   border-radius: 5px;
 }
+.box_label label {
+  margin:0 0 5px 0!important;
+}
 .layer_box label {
   display: block;
   text-align: left;
@@ -350,11 +353,18 @@ h2.slide-desc.desc_set {
 .layer_box .lb_w {
   width:285px;
 }
+.layer_box .lb_w2 {
+  width:270px;
+}
 .layer_box p {
   text-decoration: underline;
   padding:20px 0;
 }
 .layer_box p a {
+  color:#222;
+}
+.layer_box h2 {
+  text-align: center;
   color:#222;
 }
 .layer_boxset {
@@ -791,14 +801,84 @@ h2.slide-desc.desc_set {
 }
 .ds_home {
   position: absolute;
-  right: 5px;
-  top: 20px;
+  right: 5%;
+  top: 25px;
   font-size: 20px;
   color: #222;
   text-align: right;
 }
-.ds_home i {
+.ds_home p {
+  line-height: 0.2em;
+  font-size:15px;
+}
+.ds_homeli li {
+  display: inline;
+  margin:0 5px;
   color:#222;
+  font-size: 20px;
+}
+.ds_homeli li a {
+  color:#222;
+}
+/* 숨겨진 체크박스 기본 상태 */
+#layer-toggle:checked ~ .ds_overlay {
+  display: block;
+}
+
+.ds_overlay {
+  display: none;
+  position: fixed;
+  top: 70px;
+  right: 10px;
+  z-index: 10;
+}
+
+.layer-popup {
+  position: absolute;
+  top: 70px;
+  right: 0;
+  transform: translate(-50%, -65%);
+  width: 200px;
+  padding: 40px 20px 20px 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  z-index: 999;
+  font-size:15px;
+}
+.layer-popup li {
+  display: inline-block;
+  padding:10px;
+}
+.layer-popup li a {
+  color:#222;
+}
+.layer-popup li a:hover {
+  color:#156ebe;
+  transition: all 0.3s ease;
+}
+.ds_home i.fa-user {
+  color: #222;
+  font-size:20px;
+}
+
+.ds_home i.fa-user:hover {
+  color: #0056b3;
+}
+
+.close-link {
+  position: absolute;
+  right:10px;
+  top:10px;
+  color: #222;
+  text-decoration: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.close-link:hover {
+  background-color: #ccc;
 }
 .logo_ci {
   margin-left:40px;
@@ -1143,6 +1223,75 @@ input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
 .menu-item:hover .dropdown-content {
   display: block;
 }
+.cre_tit {
+  font-size: 34px;
+  font-weight: 700;
+  color: #181818; /* $black */
+}
+.description {
+  font-size: 14px;
+}
+.main_body {
+  width: 100% !important;
+  height: 100vh !important;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  background-color: #ecf0f3;
+  color: #a0a5a8;
+}
+.main_box {
+  width: 1000px;
+  min-width: 1000px;
+  min-height: 600px;
+  height: 600px;
+  padding: 0;
+  background-color: #d6dcec;
+  box-shadow: 5px 5px 5px #d2d6dd, -5px -5px 5px #f9f9f9;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  text-align: center;
+}
+.main_con1 {
+  display: block;
+  width: 400px;
+  height: 100%;
+  padding-top:250px;
+  background-color: #ecf0f3;
+  overflow: hidden;
+  box-shadow: 4px 4px 10px #d2d6dd, -4px -4px 10px #f9f9f9;
+}
+.main_con2 {
+  display: block;
+  width: 600px;
+  height: 100%;
+  padding: 250px 25px 25px 25px;
+}
+
+.button {
+  width: 180px;
+  height: 50px;
+  border-radius: 25px;
+  background-color: #94abf2;
+  color: #f9f9f9;
+  font-weight: 700;
+  box-shadow: 8px 8px 16px #d1d9e6;
+  border: none;
+}
+.button:hover {
+  background: #89abf4;
+}
+
+.a-container {
+  z-index: 100;
+  left: calc(100% - 600px);
+}
+
+
+
 
 /*pc css end*/
 /* responsive */
@@ -1185,6 +1334,37 @@ input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
   }
   .ds_home {
     font-size:13px;
+  }
+  .main_body {
+    flex-wrap: wrap;
+    justify-content:flex-start;
+    overflow: hidden;
+  }
+  .main_box {
+    display: flex;
+    padding: 0;
+    background-color: #ecf0f3;
+    border-radius: 10px;
+    overflow: hidden;
+    width:100%;
+    max-width: 400px !important;
+    flex-direction: column;
+    box-shadow: none;
+  }
+  .main_con1 {
+    background-color: #ecf0f3;
+    padding-top:150px !important;
+    box-shadow: none;
+    width:100%;
+    max-width: 400px !important
+  }
+  .main_con2 {
+    padding-top:30px;
+    width:100%;
+    max-width: 400px !important
+  }
+  .layer-popup {
+    transform: translate(0%, -63%);
   }
 }
 @media (max-width: 1500px){
